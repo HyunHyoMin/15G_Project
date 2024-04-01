@@ -1,0 +1,59 @@
+<style>
+    .title_box {
+        display:inline-block; 
+        width:100%; 
+        padding:10px 0 10px 0; 
+        line-height:1.3em; 
+        background:#EAEAEA; 
+        color:#333333; 
+        text-align:center; 
+        font-size:16px; 
+        font-weight:bold;
+    }
+
+    .list th {
+        height: 30px;
+        text-align: center;
+        border: 1px solid #e1e1e1;
+        background-color: #797979;
+        color: white;
+    }
+    .list td {
+        height: 30px;
+        text-align: center;
+        border: 1px solid #e1e1e1;
+    }
+    .list tr:nth-child(even) {
+        background-color: lightgoldenrodyellow;
+    }
+    .cool{
+        background-color: aqua;
+    }
+</style>
+
+<table class="list" border="0" align="center"cellspacing="0" cellpadding="0" style="width: 100%;">
+    <colgroup>
+        <col width="5%" />
+        <col width="50%" />
+    </colgroup>
+    <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>등록날짜</th>
+    </tr>
+
+    <div class="title_box cool">15g조 게시판</div>
+<div style="text-align: right; padding: 20px 0 10px 0;">
+    <form name="notice_search_form" action="" method="POST" style="display: inline;">
+        <span style="float:left; position: relative; bottom: 7px;">
+            <input type="text" name="notice_search_text" value="">
+            <input type="image" style="width:23px; position: relative; top: 6px;">
+        </span>
+    </form>
+    <form action="{{ url_for('create') }}" method="GET">
+        <input type="submit" value="글쓰기">
+    </form>
+    <input type="button" value="삭제">
+</div>
+
+</table>
