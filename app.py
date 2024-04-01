@@ -1,6 +1,5 @@
 from flask import Flask, request, redirect, render_template
 import sqlite3
-
 app = Flask(__name__)
 
 DATABASE = 'database.db'
