@@ -47,5 +47,3 @@ def post(post_id):
 if __name__ == '__main__':
     create_table()
     app.run(debug=True)
-
-    return render_template('index.html')
