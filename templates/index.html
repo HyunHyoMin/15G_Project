@@ -1,9 +1,5 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
 <html lang="ko">
-=======
-<html lang="en">
->>>>>>> cb66c9d5620174ba66d5143a735657d491cda5a8
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -26,7 +22,6 @@
             <input type="search" placeholder="검색어를 입력하세요.">
             	<a class="search" href="#">검색</a>
 
-<<<<<<< HEAD
             <!-- 내용을 HTML로 작성하기 -->
             {% for post in posts %}
             <div class="content-box">
@@ -84,12 +79,6 @@
             <td>{{ post[0] }}</td>
             <td><a href="/post/{{ post[0] }}">{{ post[1] }}</a></td>
             <td>{{ post[2] }}</td>
-            <td>
-                <form action="{{ url_for('delete', post_id=post[0]) }}" method="POST"
-                    onsubmit="return confirm('정말로 삭제하시겠습니까?');">
-                    <button type="submit" class="btn btn-danger">삭제하기</button>
-                </form>
-            </td>
         </tr>
         {% endfor %}
     </table>
@@ -100,10 +89,6 @@
                 <input type="image" style="width:23px; position: relative; top: 6px;">
             </span>
         </form>
-        <form action="{{ url_for('create') }}" method="GET">
-            <button type="submit" class="btn btn-primary">글쓰기</button>
-        </form>
     </div>
 </body>
 </html>
->>>>>>> cb66c9d5620174ba66d5143a735657d491cda5a8
