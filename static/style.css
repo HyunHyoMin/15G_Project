@@ -78,10 +78,26 @@ body {
     border: none;
 }
 
+<<<<<<< HEAD
 .card-body .title {
     float: left;
     width: 40%;
     text-align: center;
+=======
+.card-body .check ,.delete {
+    width: 10%;
+}
+
+.card-body .title {
+    width: 50%;
+    text-align: left;
+    
+}
+
+.card-body .date {
+    width: 20%;
+    text-align : right;
+>>>>>>> b5c7b6b80c26b9b44d17376e43f2aaf8d3266b41
 }
 
 .card-body .writer {
@@ -439,11 +455,20 @@ body {
     bottom: 0;
     margin: 10px 10px 20px 10px;
     padding: 10px;
+    background-color: rgb(83, 71, 255);
+    color: #fff;
+    border-radius: 10px;
+    cursor : pointer
 }
 
-.btn-edit a {
+.btn-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    margin: 10px 10px 20px 10px;
     padding: 10px;
     background-color: rgb(83, 71, 255);
     color: #fff;
     border-radius: 10px;
+    cursor : pointer
 }

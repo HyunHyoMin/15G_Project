@@ -13,19 +13,25 @@
     <div class="card">
         <div class="card-header4">
             <h1>글 수정하기</h1></a>
+            <form action="/edit/{{ post[0] }}" method="POST">
+        </div>
+        <div class="card-write d-flex justify-contents-center">
+            <div class="myinfo">
+                <!-- password만 입력하기 위해 input에서 type="password" 지정 -->
+                비밀번호<input type="password" name="password" placeholder="비밀번호를 입력하세요.">
+            </div>
         </div>
         <div class="card-edit">
             <div class="title">
-                제목<input type="text" placeholder="제목을 입력하세요." value="안녕하세요. 이것은 게시판 제목입니다.">
+                제목<input type="text" name="title" value="{{ post[2] }}">
             </div>
+
             <div class="msg">
                 <!-- textarea에서는 input의 value와는 다르게 textarea 안에 내용을 작성하며 tab을 없앤다. -->
-                내용<textarea placeholder="내용을 입력하세요.">
-동해물과 백두산이 마르고 닳도록
-하느님이 보우하사 우리나라 만세
-무궁화 삼천리 화려 강산
-대한 사람 대한으로 길이 보전하세
+                내용<textarea name="content" placeholder="내용을 입력하세요.">
+                    {{ post[3] }}
                 </textarea>
+
                 <div class="US">
                     <input type="file">
                     <span class="secret-checkbox">
@@ -33,12 +39,10 @@
                         <input type="checkbox" name="" id="">
                     </span>
                 </div>
-            </div>
 
-            <div class="btn-edit">
-                <a href="index2.html">수정</a>
+                <button class="btn-edit" type="submit">수정</button>
+                </form>
             </div>
-        </div>
 
 
 </body>
