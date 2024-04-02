@@ -223,7 +223,7 @@ body {
 }
 
 
-/* post2의 css */
+/* post의 css */
 
 .card-header3 h1 {
     padding: 20px;
@@ -349,7 +349,7 @@ body {
     color: #fff;
 }
 
-/* edit2의 css 구역 */
+/* edit의 css 구역 */
 
 .card-header4 h1 {
     padding: 20px;
@@ -415,12 +415,9 @@ body {
 
 }
 
-
 .btn-edit {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    margin: 10px 10px 20px 10px;
+    float: right;
+    margin: 50px 50px 20px 10px;
     padding: 10px;
     background-color: rgb(83, 71, 255);
     color: #fff;
