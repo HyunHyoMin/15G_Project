@@ -38,7 +38,7 @@ def create_table_users():
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
     cur.execute('''
-        CREATE TABLE IF NOT EXISTS comments (
+        CREATE TABLE IF NOT EXISTS users (
             username TEXT PRIMARY KEY,
             password TEXT NOT NULL
         )
