@@ -2,6 +2,7 @@ import sqlite3
 
 DATABASE = 'database.db'
 
+
 def create_table_posts():
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
@@ -18,6 +19,7 @@ def create_table_posts():
     conn.commit()
     conn.close()
 
+
 def create_table_comments():
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
@@ -33,6 +35,7 @@ def create_table_comments():
     ''')
     conn.commit()
     conn.close()
+
 
 def create_table_users():
     conn = sqlite3.connect(DATABASE)

@@ -19,18 +19,18 @@
 
         <div class="card-view">
             <div class="title">
-                <h3>{{ post[1] }}</h3>
+                <h3>{{ post[2] }}</h3>
             </div>
             <div class="myinfo">
 
                 <!-- 목록을 만드는 <dl>, <dt>, <dd> tag -->
                 <dl>
                     <dt>작성자</dt>
-                    <dd>김이름</dd>
+                    <dd>{{post[1]}}</dd>
                 </dl>
                 <dl>
                     <dt>날짜</dt>
-                    <dd>{{ post[3] }}</dd>
+                    <dd>{{ post[4] }}</dd>
                 </dl>
                 <dl>
                     <dt>조회</dt>
@@ -38,7 +38,7 @@
                 </dl>
             </div>
             <div class="cont">
-                {{ post[2] }}
+                {{ post[3] }}
             </div>
 
             <div class="reply">
@@ -73,9 +73,9 @@
         </div>
         <!-- 수정을 누를시 수정 페이지인 edit2.html로 이동 -->
         <form action="/edit/{{ post[0] }}" method="GET">
-        <div class="btn-view">
-            <a href="/edit/{{ post[0] }}">수정</a>
-        </div>
+            <div class="btn-view">
+                <a href="/edit/{{ post[0] }}">수정</a>
+            </div>
         </form>
     </div>
 </body>

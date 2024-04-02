@@ -13,18 +13,23 @@
     <div class="card">
         <div class="card-header4">
             <h1>글 수정하기</h1></a>
-        <form action="/edit/{{ post[0] }}" method="POST">
+            <form action="/edit/{{ post[0] }}" method="POST">
         </div>
-
+        <div class="card-write d-flex justify-contents-center">
+            <div class="myinfo">
+                <!-- password만 입력하기 위해 input에서 type="password" 지정 -->
+                비밀번호<input type="password" name="password" placeholder="비밀번호를 입력하세요.">
+            </div>
+        </div>
         <div class="card-edit">
             <div class="title">
-                제목<input type="text" name="title" value="{{ post[1] }}">
+                제목<input type="text" name="title" value="{{ post[2] }}">
             </div>
 
             <div class="msg">
                 <!-- textarea에서는 input의 value와는 다르게 textarea 안에 내용을 작성하며 tab을 없앤다. -->
                 내용<textarea name="content" placeholder="내용을 입력하세요.">
-                    {{ post[2] }}
+                    {{ post[3] }}
                 </textarea>
 
                 <div class="US">
@@ -35,9 +40,9 @@
                     </span>
                 </div>
 
-        <button class="btn-edit" type="submit">수정</button>
-    </form>
-        </div>
+                <button class="btn-edit" type="submit">수정</button>
+                </form>
+            </div>
 
 
 </body>
