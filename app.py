@@ -142,15 +142,31 @@ def signup():
         username = request.form['username']
         password = request.form['password']
         re_password = request.form['re_password']
-        if password == re_password:
-            conn = sqlite3.connect(DATABASE)
-            cur = conn.cursor()
-            cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
-            conn.commit()
+        conn = sqlite3.connect(DATABASE)
+        cur = conn.cursor()
+        cur.execute("SELECT username FROM users")
+        existing_usernames = [row[0] for row in cur.fetchall()]
+        if username in existing_usernames:
             conn.close()
-            return redirect('/')
-        else:
-            return "비밀번호가 서로 다릅니다."
+            return '''
+                <script> alert("해당 ID가 이미 존재합니다.");
+                location.href="/signup"
+                </script>
+                '''
+        if password != re_password:
+            return '''
+                <script> alert("비밀번호가 서로 다릅니다.");
+                location.href="/signup"
+                </script>
+                '''
+        cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+        conn.commit()
+        conn.close()
+        return '''
+                <script> alert("회원가입에 성공했습니다.");
+                location.href="/"
+                </script>
+                '''
     return render_template('signup.html')
 
 if __name__ == '__main__':
