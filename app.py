@@ -139,8 +139,7 @@ def create_comment(post_id):
     comment_text = request.form['comment']
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
-    cur.execute("INSERT INTO comments (post_id, comment, date) VALUES (?, ?, ?)",
-                (post_id, comment_text, date))
+    cur.execute("INSERT INTO comments (post_id, comment, date) VALUES (?, ?, ?)", (post_id, comment_text, date))
     conn.commit()
     conn.close()
     return redirect(f'/post/{post_id}')
