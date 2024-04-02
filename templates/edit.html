@@ -1,59 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit</title>
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+    <title>글 수정하기</title>
 </head>
 
 <body>
-    <h1>Edit Post</h1>
-    <form action="/edit/{{ post[0] }}" method="POST">
-        <label for="title">Title:</label><br>
-        <input type="text" id="title" name="title" value="{{ post[1] }}"><br>
-        <label for="content">Content:</label><br>
-        <textarea id="content" name="content">{{ post[2] }}</textarea><br>
-        <button type="submit">edit</button>
-    </form>
-    <form action="/" method="GET">
-        <button type="submit">home</button>
-    </form>
+    <div class="card">
+        <div class="card-header4">
+            <h1>글 수정하기</h1></a>
+            <form action="/edit/{{ post[0] }}" method="POST">
+        </div>
+        <div class="card-write d-flex justify-contents-center">
+            <div class="myinfo">
+                <!-- password만 입력하기 위해 input에서 type="password" 지정 -->
+                비밀번호<input type="password" name="password" placeholder="비밀번호를 입력하세요.">
+            </div>
+        </div>
+        <div class="card-edit">
+            <div class="title">
+                제목<input type="text" name="title" value="{{ post[2] }}">
+            </div>
 
-    <h2>Comments</h2>
-    {% if comments %}
-    <ul>
-        {% for comment in comments %}
-        <li>{{ comment[2] }} | <a href="/edit_comment/{{ comment[0] }}">Edit</a> | <a href="/delete_comment/{{ comment[0] }}">Delete</a></li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>No comments yet.</p>
-    {% endif %}
-    <form action="/comment/{{ post[0] }}" method="GET">
-        <button type="submit">Add Comment</button>
-    </form>
+            <div class="msg">
+                <!-- textarea에서는 input의 value와는 다르게 textarea 안에 내용을 작성하며 tab을 없앤다. -->
+                내용<textarea name="content" placeholder="내용을 입력하세요.">
+                    {{ post[3] }}
+                </textarea>
 
-    <script>
-        document.getElementById('deleteForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // 기본 제출 동작을 막습니다.
-            if (confirm('정말로 삭제하시겠습니까?')) {
-                // 확인 버튼을 누르면 DELETE 요청을 보냅니다.
-                var postId = {{ post[0] }};
-                fetch('/delete/' + postId, {
-                    method: 'DELETE'
-                }).then(function(response) {
-                    if (response.ok) {
-                        window.location.href = '/'; // 삭제 후 홈 페이지로 이동합니다.
-                    } else {
-                        alert('삭제에 실패했습니다.');
-                    }
-                }).catch(function(error) {
-                    console.error('Error:', error);
-                });
-            }
-        });
-    </script>
+                <div class="US">
+                    <input type="file">
+                    <span class="secret-checkbox">
+                        <span class="text-checkbox">비밀 글</span>
+                        <input type="checkbox" name="" id="">
+                    </span>
+                </div>
+
+                <button class="btn-edit" type="submit">수정</button>
+                </form>
+            </div>
+
+
 </body>
 
 </html>
