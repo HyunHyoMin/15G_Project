@@ -14,23 +14,6 @@
     <!-- 1. 게시판의 화면은 class="card"로 적용 -->
     <div class="card">
 
-      <!-- 1-2. 내용은 class="card-body"로 <div>로 구역 설정 -->
-      <div class="card-body">
-        <!-- 검색어 입력하기 -->
-        <input type="search" placeholder="검색어를 입력하세요." />
-        <a class="search" href="#">검색</a>
-
-        <!-- 내용을 HTML로 작성하기 -->
-        {% for post in posts %}
-          <div class="content-box">
-            <div class="title">
-              <a href="/post/{{ post[0] }}">{{ post[1] }}</a>
-            </div>
-            <div class="writer">작성자</div>
-            <div class="date">{{ post[2] }}</div>
-            <form action="{{ url_for('delete', post_id = post[0]) }}" method="GET">
-            <div class="delete">
-                <button>X</button>
         <!-- 1-1. 게시판 이름은 class="card-header"로  <div>로 구역 설정 -->
         <div class="card-header">
             <h1>15G는 게시판</h1>
@@ -76,16 +59,11 @@
         </form>
 
         <form action="{{ url_for('signup') }}" method="GET">
-          <div class="btn-container">
-            <a href="/signup">회원가입</a>
-          </div>
             <div class="btn-container">
                 <a href="/signup">회원가입</a>
             </div>
         </form>
     </div>
-  </body>
-</html>
 </body>
 <script>
     document.getElementById("deleteForm").onsubmit = function () {
