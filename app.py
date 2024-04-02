@@ -165,7 +165,7 @@ def signup():
     return render_template('signup.html')
 
 if __name__ == '__main__':
-    create_table_posts()
     create_table_users()
+    create_table_posts()
     create_table_comments()
     app.run(debug=True)
