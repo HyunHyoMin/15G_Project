@@ -79,12 +79,13 @@ body {
 }
 
 .card-body .check ,.delete {
-    width: 5%;
+    width: 10%;
 }
 
 .card-body .title {
     width: 50%;
     text-align: left;
+    
 }
 
 .card-body .date {

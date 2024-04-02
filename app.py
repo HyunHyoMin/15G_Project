@@ -15,17 +15,17 @@ def index():
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
     # 날짜순으로 내림차순 정렬
-    cur.execute("SELECT id, title, date FROM posts ORDER BY date DESC")
+    cur.execute("SELECT * FROM posts ORDER BY date DESC")
     posts = cur.fetchall()
     conn.close()
 
     # 등록된 날짜와 시간을 datetime 객체로 변환합니다.
-    formatted_posts = [(post[0], post[1], datetime.strptime(
-        post[2], '%Y-%m-%d %H:%M')) for post in posts]
+    formatted_posts = [(post[0], post[1],post[2],post[3], datetime.strptime(
+        post[4], '%Y-%m-%d %H:%M')) for post in posts]
 
     # 시간이 같은 경우 먼저 등록된 게시글이 아래로 가도록 정렬합니다.
     sorted_posts = sorted(
-        formatted_posts, key=lambda x: (x[2], x[0]), reverse=True)
+        formatted_posts, key=lambda x: (x[4], x[0]), reverse=True)
 
     return render_template('index.html', posts=sorted_posts)
 
