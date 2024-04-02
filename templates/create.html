@@ -9,7 +9,7 @@
 
 <body>
     <h1>Create New Post</h1>
-    <form action="/create/" method="post">
+    <form action="/create/" method="post" id="createForm">
         <label for="title">Title:</label><br>
         <input type="text" id="title" name="title"><br>
         <label for="content">Content:</label><br>
@@ -17,6 +17,17 @@
         <button type="submit" name="btn" value="1">작성하기</button>
         <button type="submit" name="btn" value="0">뒤로가기</button>
     </form>
+
+    <script>
+        document.getElementById('createForm').addEventListener('submit', function(e) {
+            var title = document.getElementById('title').value;
+            var content = document.getElementById('content').value;
+            if (title.trim() === '' || content.trim() === '') {
+                e.preventDefault(); // 폼 제출을 취소합니다.
+                alert('제목과 내용을 모두 입력해주세요.');
+            }
+        });
+    </script>
 </body>
 
 </html>
