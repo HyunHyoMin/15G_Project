@@ -26,9 +26,6 @@ def index():
     return render_template('index.html', posts=sorted_posts)
 
 
-
-
-
 @app.route('/create/', methods=['GET', 'POST'])
 def create():
     if request.method == 'POST' and request.form['btn'] == '1':
@@ -43,7 +40,7 @@ def create():
         return redirect(f'/post/{new_post_id}')
     elif request.method == 'POST' and request.form['btn'] == '0':
         return index()
-    return render_template('create2.html')
+    return render_template('create.html')
 
 @app.route('/post/<int:post_id>', methods=['GET'])
 def post(post_id):
