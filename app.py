@@ -162,10 +162,12 @@ def create_comment(post_id):
 def delete_comment(comment_id):
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
+    cur.execute("SELECT post_id FROM comments WHERE id = ?", (comment_id,))
+    post_id = cur.fetchone()
     cur.execute("DELETE FROM comments WHERE id=?", (comment_id,))
     conn.commit()
     conn.close()
-    return redirect(request.referrer)
+    return post(post_id[0])
 
 
 @app.route('/edit_comment/<int:comment_id>', methods=['GET', 'POST'])
