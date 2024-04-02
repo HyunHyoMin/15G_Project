@@ -168,13 +168,16 @@ def delete_comment(comment_id):
     conn.commit()
     conn.close()
     return post(post_id[0])
+    # 이전에는 comment_id로 post_id를 이용해서 redirect했었는데
+    # DELETE 이후, 댓글이 없어지면 접근할 수 없어지기 때문에
+    # DELETE 이전에 post_id를 가져오고서 transaction 시행 -> post(post_id) 호출
 
 
 @app.route('/edit_comment/<int:comment_id>', methods=['GET', 'POST'])
 def edit_comment(comment_id):
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
-    # 댓글 수정 창에서 수정하기 눌렀을 때
+    # edit_comment.html 에서 수정하기 눌렀을 때
     if request.method == 'POST':
         new_comment_text = request.form['comment']
         cur.execute("UPDATE comments SET comment = ? WHERE id = ?",
@@ -184,7 +187,7 @@ def edit_comment(comment_id):
         conn.commit()
         conn.close()
         return post(post_id[0])
-    # 글 창에서 EDIT을 눌렀을 때
+    # post.html 에서 EDIT을 눌렀을 때
     else:
         cur.execute("SELECT * FROM comments WHERE id = ?", (comment_id,))
         comment = cur.fetchone()
