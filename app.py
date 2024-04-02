@@ -171,15 +171,11 @@ def signup():
         cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
         conn.commit()
         conn.close()
-<<<<<<< HEAD
-        return redirect('/')
-=======
         return '''
                 <script> alert("회원가입에 성공했습니다.");
                 location.href="/"
                 </script>
                 '''
->>>>>>> 1850ad1abeabd2322be6d6ede95b848b12d072de
     return render_template('signup.html')
 
 if __name__ == '__main__':
