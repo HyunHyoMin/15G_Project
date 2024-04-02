@@ -142,8 +142,19 @@ body {
     color: #fff;
     border-radius: 10px;
 }
-
-
+.btn-container {
+    position: absolute;
+    top: 10px; /* 원하는 위치로 조정 */
+    right: 10px; /* 원하는 위치로 조정 */
+    padding: 10px;
+    margin: 10px 10px 20px 10px 
+}
+.btn-container a {
+    padding: 10px;
+    background-color: rgb(83, 71, 255);
+    color: #fff;
+    border-radius: 10px;
+}
 /* post2의 css 구역*/
 
 .card-header1 h1 {
@@ -213,3 +224,5 @@ body {
     color: #fff;
     border-radius: 10px;
 }
+
+.name 

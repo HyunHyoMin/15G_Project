@@ -136,6 +136,19 @@ def edit_comment(comment_id):
         conn.close()
         return render_template('edit_comment.html', comment_id=comment[0], comment_text=comment[2])
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        conn = sqlite3.connect(DATABASE)
+        cur = conn.cursor()
+        cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+        conn.commit()
+        conn.close()
+        return redirect('/')
+    return render_template('signup.html')
+
 if __name__ == '__main__':
     create_table_posts()
     create_table_users
