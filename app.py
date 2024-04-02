@@ -141,12 +141,16 @@ def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        conn = sqlite3.connect(DATABASE)
-        cur = conn.cursor()
-        cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
-        conn.commit()
-        conn.close()
-        return redirect('/')
+        re_password = request.form['re_password']
+        if password == re_password:
+            conn = sqlite3.connect(DATABASE)
+            cur = conn.cursor()
+            cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+            conn.commit()
+            conn.close()
+            return redirect('/')
+        else:
+            return "비밀번호가 서로 다릅니다."
     return render_template('signup.html')
 
 if __name__ == '__main__':
