@@ -20,7 +20,7 @@ def index():
     conn.close()
 
     # 등록된 날짜와 시간을 datetime 객체로 변환합니다.
-    formatted_posts = [(post[0], post[1],post[2],post[3], datetime.strptime(
+    formatted_posts = [(post[0], post[1], post[2], post[3], datetime.strptime(
         post[4], '%Y-%m-%d %H:%M')) for post in posts]
 
     # 시간이 같은 경우 먼저 등록된 게시글이 아래로 가도록 정렬합니다.
@@ -137,12 +137,21 @@ def view_comments(post_id):
 @app.route('/create_comment/<int:post_id>', methods=['POST'])
 def create_comment(post_id):
     comment_text = request.form['comment']
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
-    cur.execute("INSERT INTO comments (post_id, comment, date) VALUES (?, ?, ?)", (post_id, comment_text, date))
-    conn.commit()
-    conn.close()
-    return redirect(f'/post/{post_id}')
+    print(comment_text)
+    if comment_text:
+        conn = sqlite3.connect(DATABASE)
+        cur = conn.cursor()
+        cur.execute("INSERT INTO comments (post_id, comment, date) VALUES (?, ?, ?)",
+                    (post_id, comment_text, date))
+        conn.commit()
+        conn.close()
+        return redirect(f'/post/{post_id}')
+    else:
+        return f'''
+        <script> alert("빈 댓글은 게시할 수 없습니다");
+        location.href="/post/{post_id}"
+        </script>
+        '''
 
 
 @app.route('/delete_comment/<int:comment_id>', methods=['GET'])
@@ -156,10 +165,10 @@ def delete_comment(comment_id):
 
 
 @app.route('/edit_comment/<int:comment_id>', methods=['GET', 'POST'])
-def edit_comment(comment_id):        
+def edit_comment(comment_id):
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
-    #댓글 수정 창에서 수정하기 눌렀을 때
+    # 댓글 수정 창에서 수정하기 눌렀을 때
     if request.method == 'POST':
         new_comment_text = request.form['comment']
         cur.execute("UPDATE comments SET comment = ? WHERE id = ?",
@@ -169,7 +178,7 @@ def edit_comment(comment_id):
         conn.commit()
         conn.close()
         return post(post_id[0])
-    #글 창에서 EDIT을 눌렀을 때
+    # 글 창에서 EDIT을 눌렀을 때
     else:
         cur.execute("SELECT * FROM comments WHERE id = ?", (comment_id,))
         comment = cur.fetchone()
