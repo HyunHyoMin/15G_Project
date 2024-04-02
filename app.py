@@ -112,13 +112,14 @@ def edit(post_id):
 @app.route('/delete/<int:post_id>', methods=['POST'])  # 메소드를 POST로 변경
 def delete(post_id):
     if request.method == 'POST':
-        conn = sqlite3.connect(DATABASE)
-        cur = conn.cursor()
-        cur.execute("DELETE FROM posts WHERE id=?", (post_id,))
-        cur.execute("DELETE FROM comments WHERE post_id=?", (post_id,))
-        conn.commit()
-        conn.close()
-        return redirect('/')
+        if request.form.get('confirm_delete') == '1':
+            conn = sqlite3.connect(DATABASE)
+            cur = conn.cursor()
+            cur.execute("DELETE FROM posts WHERE id=?", (post_id,))
+            cur.execute("DELETE FROM comments WHERE post_id=?", (post_id,))
+            conn.commit()
+            conn.close()
+            return index()
     else:
         return "Method Not Allowed", 405  # 잘못된 메소드를 수신할 경우 에러 코드 405를 반환
 

@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="{{ url_for('static', filename = 'style.css') }}" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css" />
-    <title>15G조 게시판</title>
-  </head>
-  <body>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>15G는 게시판</title>
+</head>
 
 <body>
     <!-- 1. 게시판의 화면은 class="card"로 적용 -->
@@ -33,7 +33,7 @@
                 <button>X</button>
         <!-- 1-1. 게시판 이름은 class="card-header"로  <div>로 구역 설정 -->
         <div class="card-header">
-            <h1>15G조 게시판</h1>
+            <h1>15G는 게시판</h1>
         </div>
 
         <!-- 1-2. 내용은 class="card-body"로 <div>로 구역 설정 -->
@@ -49,8 +49,11 @@
                 <div class="title"><a href="/post/{{ post[0] }}"><strong>{{ post[2] }}</strong></a></div>
                 <div class="writer"> {{post[1]}} </div>
                 <div class="date"> {{ post[4] }} </div>
-                <form action="{{ url_for('delete', post_id=post[0]) }}" method="POST">
-                    <div class="delete"><button>삭제하기</button></div>
+                <form id="deleteForm" action="{{ url_for('delete', post_id=post[0]) }}" method="POST">
+                    <div class="delete">
+                        <input type="hidden" name="confirm_delete" value="1">
+                        <button type="submit">삭제하기</button>
+                    </div>
                 </form>
             </div>
             {% endfor %}
@@ -84,5 +87,13 @@
   </body>
 </html>
 </body>
+<script>
+    document.getElementById("deleteForm").onsubmit = function () {
+        // 삭제하기 전에 한 번 더 확인하는 창을 띄움
+        var result = confirm("정말 삭제하시겠습니까?");
+        // 사용자가 "Yes"를 클릭한 경우에만 삭제를 진행함
+        return result;
+    };
+</script>
 
 </html>
