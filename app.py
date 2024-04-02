@@ -32,7 +32,7 @@ def index():
 
 @app.route('/create/', methods=['GET', 'POST'])
 def create():
-    # 작성하기를 누른 경우
+    # create.html에서 글을 다 쓰고, 작성하기를 누른 경우
     if request.method == 'POST' and request.form['btn'] == '1':
         username = request.form['username']
         password = request.form['password']
@@ -54,9 +54,10 @@ def create():
         # 입력한 계정이 유효하지 않은(회원가입 되어 있지 않은) 경우 = Bad request
         else:
             abort(400)
-    # 뒤로 가기를 누른 경우
+    # create.html에서 뒤로가기를 누른 경우
     elif request.method == 'POST' and request.form['btn'] == '0':
         return index()
+    # index.html에서 글쓰기를 누른 경우
     return render_template('create.html')
 
 
@@ -69,11 +70,9 @@ def post(post_id):
     cur.execute("SELECT * FROM comments WHERE post_id = ?", (post_id,))
     comments = cur.fetchall()
     conn.close()
-
     # 게시글이 없을 경우 404 에러 반환
     if not post:
         abort(404)
-
     return render_template('post.html', post=post, comments=comments)
 
 
@@ -81,6 +80,7 @@ def post(post_id):
 def edit(post_id):
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
+    # edit.html에서 수정을 누른 경우
     if request.method == 'POST':
         password = request.form['password']
         title = request.form['title']
@@ -102,6 +102,7 @@ def edit(post_id):
                 location.href="/"
                 </script>
                 '''
+    # post.html 에서 수정을 누른 경우    
     else:
         cur.execute("SELECT * FROM posts WHERE id = ?", (post_id,))
         post = cur.fetchone()
@@ -111,6 +112,7 @@ def edit(post_id):
 
 @app.route('/delete/<int:post_id>', methods=['POST'])  # 메소드를 POST로 변경
 def delete(post_id):
+    #
     if request.method == 'POST':
         if request.form.get('confirm_delete') == '1':
             conn = sqlite3.connect(DATABASE)
@@ -138,6 +140,7 @@ def view_comments(post_id):
 def create_comment(post_id):
     comment_text = request.form['comment']
     print(comment_text)
+    # comment에 내용이 있을 경우
     if comment_text:
         conn = sqlite3.connect(DATABASE)
         cur = conn.cursor()
@@ -146,6 +149,7 @@ def create_comment(post_id):
         conn.commit()
         conn.close()
         return redirect(f'/post/{post_id}')
+    # comment가 blank인 경우
     else:
         return f'''
         <script> alert("빈 댓글은 게시할 수 없습니다");
