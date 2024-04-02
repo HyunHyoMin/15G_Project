@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit</title>
+</head>
+<body>
+    <h1>Edit Post</h1>
+    <form action="/edit/{{ post[0] }}" method="POST">
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title" value="{{ post[1] }}"><br>
+        <label for="content">Content:</label><br>
+        <textarea id="content" name="content">{{ post[2] }}</textarea><br>
+        <button type="submit">edit</button>
+        </form>
+    <form action="/" method="GET">
+        <button type="submit">home</button>
+    </form>
+</body>
+</html>

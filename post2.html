@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>15G조 글쓰기</title>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header1">
+            <!-- 게시판을 누를시 첫 페이지인 index.html로 이동 -->
+            <h1><a href="index2.html">15G조 글쓰기</a></h1>
+        </div>
+
+        <div class="card-write">
+            <div class="myinfo">
+                <!-- text만 입력하기 위해 input에서 type="text" 지정 -->
+                이름<input type="text" placeholder="이름을 입력하세요.">
+
+                <!-- password만 입력하기 위해 input에서 type="password" 지정 -->
+                비밀번호<input type="password" placeholder="비밀번호를 입력하세요.">
+
+                비밀 글 <input type="checkbox" name="" id="">
+            </div>
+            <div class="title-w">
+                제목<input type="text" placeholder="제목을 입력하세요.">
+            </div>
+
+            <div class="msg">
+
+                <!-- 내용을 입력하기 위해 textarea tag를 이용 -->
+                내용<textarea placeholder="내용을 입력하세요."></textarea>
+                <input type="file" name="" id="">
+            </div>
+        </div>
+        <div class="btn-w"><a href="#">작성</a></div>
+    </div>
+</body>
+</html>

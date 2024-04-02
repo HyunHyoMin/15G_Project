@@ -8,6 +8,15 @@
 <body>
     <h1>제목 : {{ post[1] }}</h1>
     <p>내용 : {{ post[2] }}</p>
-    <a href="{{ url_for('index') }}">홈으로 이동</a>
+
+    <form action="/edit/{{ post[0] }}" method="GET">
+        <button type="submit">edit</button>
+    </form>
+
+    <form action="/" method="GET">
+    <button type="submit">home</button>
+    </form>
+
+
 </body>
 </html>
