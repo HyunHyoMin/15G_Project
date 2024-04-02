@@ -162,6 +162,11 @@ def signup():
         cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
         conn.commit()
         conn.close()
+        return '''
+                <script> alert("회원가입에 성공했습니다.");
+                location.href="/"
+                </script>
+                '''
     return render_template('signup.html')
 
 if __name__ == '__main__':
