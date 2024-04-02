@@ -1,37 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ post[1] }}</title>
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+    <title>view</title>
 </head>
 
 <body>
-    <h1>제목 : {{ post[1] }}</h1>
-    <p>내용 : {{ post[2] }}</p>
+    <div class="card">
 
-    <h2>댓글 작성</h2>
-    <form action="/create_comment/{{ post[0] }}" method="POST">
-        <label for="comment">댓글 내용:</label><br>
-        <textarea id="comment" name="comment"></textarea><br>
-        <button type="submit">댓글 작성</button>
-    </form>
+        <!-- 게시판을 누를시 첫 페이지인 index.html로 이동 -->
+        <div class="card-header3">
+            <h1><a href="/">게시판</a></h1>
+        </div>
 
-    <h2>댓글 목록</h2>
-    {% if comments %}
-    <ul>
-        {% for comment in comments %}
-        <li>{{ comment[2] }} | <a href="/edit_comment/{{ comment[0] }}">Edit</a> | <a href="/delete_comment/{{ comment[0] }}">Delete</a></li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>댓글이 없습니다.</p>
-    {% endif %}
+        <div class="card-view">
+            <div class="title">
+                <h3>{{ post[1] }}</h3>
+            </div>
+            <div class="myinfo">
 
-    <form action="/" method="GET">
-        <button type="submit">홈으로</button>
-    </form>
+                <!-- 목록을 만드는 <dl>, <dt>, <dd> tag -->
+                <dl>
+                    <dt>작성자</dt>
+                    <dd>김이름</dd>
+                </dl>
+                <dl>
+                    <dt>날짜</dt>
+                    <dd>{{ post[3] }}</dd>
+                </dl>
+                <dl>
+                    <dt>조회</dt>
+                    <dd>14회</dd>
+                </dl>
+            </div>
+            <div class="cont">
+                {{ post[2] }}
+            </div>
+
+            <div class="reply">
+                <div class="replywrite">
+                    <form action="/create_comment/{{ post[0] }}" method="POST">
+                        <label for="comment"></label>
+                        <input id="comment" name="comment" type="text" class="reply-w" placeholder=" 댓글을 입력하세요.">
+                        <button class="writebtn" type="submit">댓글 작성</button>
+                    </form>
+                </div>
+                <div class="replylist">
+                    <h2>댓글 목록</h2>
+                    {% if comments %}
+                    <ul>
+                        {% for comment in comments %}
+                        <li>{{ comment[2] }} | <a href="/edit_comment/{{ comment[0] }}">Edit</a> | <a
+                                href="/delete_comment/{{ comment[0] }}">Delete</a></li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p>댓글이 없습니다.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+
+
+        </div>
+        <!-- 게시판을 누를시 첫 페이지인 index.html로 이동 -->
+        <div class="btn-home">
+            <a href="index2.html">게시판으로</a>
+        </div>
+        <!-- 수정을 누를시 수정 페이지인 edit2.html로 이동 -->
+        <div class="btn-view">
+            <a href="edit2.html">수정</a>
+        </div>
+
+    </div>
 </body>
 
 </html>
