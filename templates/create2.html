@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <title>15G조 글쓰기</title>
 </head>
@@ -15,6 +16,7 @@
         </div>
 
         <div class="card-write">
+            <form action="/create/" method="POST">
             <div class="myinfo">
                 <!-- text만 입력하기 위해 input에서 type="text" 지정 -->
                 이름<input type="text" placeholder="이름을 입력하세요.">
@@ -25,17 +27,20 @@
                 비밀 글 <input type="checkbox" name="" id="">
             </div>
             <div class="title-w">
-                제목<input type="text" placeholder="제목을 입력하세요.">
+                제목<input type="text" id="title" name="title" placeholder="제목을 입력하세요.">
             </div>
+            
 
             <div class="msg">
 
                 <!-- 내용을 입력하기 위해 textarea tag를 이용 -->
-                내용<textarea placeholder="내용을 입력하세요."></textarea>
-                <input type="file" name="" id="">
+                내용<textarea id="content" name="content" placeholder="내용을 입력하세요."></textarea>
+                <input type="file">
             </div>
+            
         </div>
-        <div class="btn-w"><a href="#">작성</a></div>
+        <div><button type ="submit" name="btn" class="btn-w" value="1">작성</button></div>
+        </form>
     </div>
 </body>
 </html>
