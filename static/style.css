@@ -144,7 +144,7 @@ body {
 }
 
 
-/* create2의 css 구역*/
+/* create의 css 구역*/
 
 .card-header1 h1 {
     padding: 20px;
@@ -199,20 +199,29 @@ body {
     margin-left: 40px;
 }
 
-.btn-w {
-    position: absolute;
-    right: 0;
-    bottom: 0;
+.btn-wb {
     margin: 10px 10px 20px 10px;
     padding: 10px;
 }
 
-.btn-w a {
+.btn-back {
+    float: left;
     background-color: rgb(83, 71, 255);
     padding: 10px;
     color: #fff;
     border-radius: 10px;
+    margin-left: 30px;
 }
+
+.btn-write {
+    float: right;
+    background-color: rgb(83, 71, 255);
+    padding: 10px;
+    color: #fff;
+    border-radius: 10px;
+    margin-right: 30px;
+}
+
 
 /* post2의 css */
 
