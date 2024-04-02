@@ -101,6 +101,8 @@ body {
 .card-body .delete button {
     background-color: #fff;
     border: none;
+    color: red;
+    font-weight: bold;
 }
 
 
