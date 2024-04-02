@@ -32,7 +32,7 @@
                 <div class="title"><a href="/post/{{ post[0] }}"><strong>{{ post[2] }}</strong></a></div>
                 <div class="writer"> {{post[1]}} </div>
                 <div class="date"> {{ post[4] }} </div>
-                <form action="{{ url_for('delete', post_id=post[0]) }}" method="GET">
+                <form action="{{ url_for('delete', post_id=post[0]) }}" method="POST">
                     <div class="delete"><button>삭제하기</button></div>
                 </form>
             </div>
