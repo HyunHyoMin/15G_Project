@@ -149,6 +149,8 @@ def signup():
             conn.commit()
             conn.close()
             return redirect('/')
+        else:
+            return "비밀번호가 서로 다릅니다."
     return render_template('signup.html')
 
 if __name__ == '__main__':
