@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit</title>
 </head>
+
 <body>
     <h1>Edit Post</h1>
     <form action="/edit/{{ post[0] }}" method="POST">
@@ -13,9 +15,45 @@
         <label for="content">Content:</label><br>
         <textarea id="content" name="content">{{ post[2] }}</textarea><br>
         <button type="submit">edit</button>
-        </form>
+    </form>
     <form action="/" method="GET">
         <button type="submit">home</button>
     </form>
+
+    <h2>Comments</h2>
+    {% if comments %}
+    <ul>
+        {% for comment in comments %}
+        <li>{{ comment[2] }} | <a href="/edit_comment/{{ comment[0] }}">Edit</a> | <a href="/delete_comment/{{ comment[0] }}">Delete</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No comments yet.</p>
+    {% endif %}
+    <form action="/comment/{{ post[0] }}" method="GET">
+        <button type="submit">Add Comment</button>
+    </form>
+
+    <script>
+        document.getElementById('deleteForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // 기본 제출 동작을 막습니다.
+            if (confirm('정말로 삭제하시겠습니까?')) {
+                // 확인 버튼을 누르면 DELETE 요청을 보냅니다.
+                var postId = {{ post[0] }};
+                fetch('/delete/' + postId, {
+                    method: 'DELETE'
+                }).then(function(response) {
+                    if (response.ok) {
+                        window.location.href = '/'; // 삭제 후 홈 페이지로 이동합니다.
+                    } else {
+                        alert('삭제에 실패했습니다.');
+                    }
+                }).catch(function(error) {
+                    console.error('Error:', error);
+                });
+            }
+        });
+    </script>
 </body>
+
 </html>

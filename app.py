@@ -1,12 +1,40 @@
 from flask import Flask, request, redirect, render_template
 import sqlite3
-from models import create_table_posts,create_table_users
 from datetime import datetime
+
 app = Flask(__name__)
 
 now = datetime.now()
-date = now.strftime('%Y-%m-%d %H:%M') 
+date = now.strftime('%Y-%m-%d %H:%M')
 DATABASE = 'database.db'
+
+def create_table():
+    conn = sqlite3.connect(DATABASE)
+    cur = conn.cursor()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS posts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL,
+            date TEXT NOT NULL
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+def create_table_comments():
+    conn = sqlite3.connect(DATABASE)
+    cur = conn.cursor()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS comments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            post_id INTEGER NOT NULL,
+            comment TEXT NOT NULL,
+            date TEXT NOT NULL
+        )
+    ''')
+    conn.commit()
+    conn.close()
 
 @app.route('/')
 def index():
@@ -15,11 +43,11 @@ def index():
     cur.execute("SELECT id, title, date FROM posts")
     posts = cur.fetchall()
     conn.close()
-    return render_template('index.html', posts = posts)
+    return render_template('index.html', posts=posts)
 
 @app.route('/create/', methods=['GET', 'POST'])
 def create():
-    if request.method == 'POST' and request.form['btn']=='1':
+    if request.method == 'POST' and request.form['btn'] == '1':
         title = request.form['title']
         content = request.form['content']
         conn = sqlite3.connect(DATABASE)
@@ -29,7 +57,7 @@ def create():
         new_post_id = cur.lastrowid
         conn.close()
         return redirect(f'/post/{new_post_id}')
-    elif request.method == 'POST' and request.form['btn']=='0':
+    elif request.method == 'POST' and request.form['btn'] == '0':
         return index()
     return render_template('create.html')
 
@@ -39,8 +67,10 @@ def post(post_id):
     cur = conn.cursor()
     cur.execute("SELECT * FROM posts WHERE id = ?", (post_id,))
     post = cur.fetchone()
+    cur.execute("SELECT * FROM comments WHERE post_id = ?", (post_id,))
+    comments = cur.fetchall()
     conn.close()
-    return render_template('post.html', post=post)
+    return render_template('post.html', post=post, comments=comments)
 
 @app.route('/edit/<int:post_id>', methods=['GET', 'POST'])
 def edit(post_id):
@@ -61,32 +91,68 @@ def edit(post_id):
         conn.close()
         return render_template('edit.html', post=post)
 
-@app.route('/delete/<int:post_id>', methods=['GET'])
+@app.route('/delete/<int:post_id>', methods=['POST'])  # 메소드를 POST로 변경
 def delete(post_id):
+    if request.method == 'POST':
+        conn = sqlite3.connect(DATABASE)
+        cur = conn.cursor()
+        cur.execute("DELETE FROM posts WHERE id=?", (post_id,))
+        cur.execute("DELETE FROM comments WHERE post_id=?", (post_id,))
+        conn.commit()
+        conn.close()
+        return redirect('/')
+    else:
+        return "Method Not Allowed", 405  # 잘못된 메소드를 수신할 경우 에러 코드 405를 반환
+
+@app.route('/comment/<int:post_id>', methods=['GET'])
+def view_comments(post_id):
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
-    cur.execute("DELETE FROM posts WHERE id=?", (post_id,))
+    cur.execute("SELECT * FROM comments WHERE post_id = ?", (post_id,))
+    comments = cur.fetchall()
+    conn.close()
+    return render_template('comments.html', comments=comments, post_id=post_id)
+
+@app.route('/create_comment/<int:post_id>', methods=['POST'])
+def create_comment(post_id):
+    comment_text = request.form['comment']
+    conn = sqlite3.connect(DATABASE)
+    cur = conn.cursor()
+    cur.execute("INSERT INTO comments (post_id, comment, date) VALUES (?, ?, ?)", (post_id, comment_text, date))
     conn.commit()
     conn.close()
-    return index()
+    return redirect(f'/post/{post_id}')
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
+
+
+@app.route('/delete_comment/<int:comment_id>', methods=['GET'])
+def delete_comment(comment_id):
+    conn = sqlite3.connect(DATABASE)
+    cur = conn.cursor()
+    cur.execute("DELETE FROM comments WHERE id=?", (comment_id,))
+    conn.commit()
+    conn.close()
+    return redirect(request.referrer)
+
+@app.route('/edit_comment/<int:comment_id>', methods=['GET', 'POST'])
+def edit_comment(comment_id):
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        re_password = request.form['re_password']
-        if re_password == password:
-            conn = sqlite3.connect(DATABASE)
-            cur = conn.cursor()
-            cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
-            conn.commit()
-            conn.close()
-            return redirect('/')
-    return render_template('signup.html')
-
+        new_comment_text = request.form['comment']
+        conn = sqlite3.connect(DATABASE)
+        cur = conn.cursor()
+        cur.execute("UPDATE comments SET comment = ? WHERE id = ?", (new_comment_text, comment_id))
+        conn.commit()
+        conn.close()
+        return redirect(request.referrer)
+    else:
+        conn = sqlite3.connect(DATABASE)
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM comments WHERE id = ?", (comment_id,))
+        comment = cur.fetchone()
+        conn.close()
+        return render_template('edit_comment.html', comment_id=comment[0], comment_text=comment[2])
 
 if __name__ == '__main__':
-    create_table_posts()
-    create_table_users()
+    create_table()
+    create_table_comments()
     app.run(debug=True)
