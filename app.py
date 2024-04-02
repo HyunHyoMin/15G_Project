@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, render_template, abort
 import sqlite3
 from datetime import datetime
 
@@ -36,14 +36,27 @@ def create_table_comments():
     conn.commit()
     conn.close()
 
+from datetime import datetime
+
 @app.route('/')
 def index():
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
-    cur.execute("SELECT id, title, date FROM posts")
+    cur.execute("SELECT id, title, date FROM posts ORDER BY date DESC")  # 날짜순으로 내림차순 정렬
     posts = cur.fetchall()
     conn.close()
-    return render_template('index.html', posts=posts)
+
+    # 등록된 날짜와 시간을 datetime 객체로 변환합니다.
+    formatted_posts = [(post[0], post[1], datetime.strptime(post[2], '%Y-%m-%d %H:%M')) for post in posts]
+
+    # 시간이 같은 경우 먼저 등록된 게시글이 아래로 가도록 정렬합니다.
+    sorted_posts = sorted(formatted_posts, key=lambda x: (x[2], x[0]), reverse=True)
+
+    return render_template('index.html', posts=sorted_posts)
+
+
+
+
 
 @app.route('/create/', methods=['GET', 'POST'])
 def create():
@@ -70,6 +83,11 @@ def post(post_id):
     cur.execute("SELECT * FROM comments WHERE post_id = ?", (post_id,))
     comments = cur.fetchall()
     conn.close()
+
+    # 게시글이 없을 경우 404 에러 반환
+    if not post:
+        abort(404)
+
     return render_template('post.html', post=post, comments=comments)
 
 @app.route('/edit/<int:post_id>', methods=['GET', 'POST'])
@@ -122,8 +140,6 @@ def create_comment(post_id):
     conn.commit()
     conn.close()
     return redirect(f'/post/{post_id}')
-
-
 
 @app.route('/delete_comment/<int:comment_id>', methods=['GET'])
 def delete_comment(comment_id):
