@@ -1,33 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create</title>
+    <title>Create New Post</title>
 </head>
-
 <body>
-    <h1>Create New Post</h1>
+    <h1>새 게시글 작성</h1>
     <form action="/create/" method="post" id="createForm">
         <label for="title">Title:</label><br>
         <input type="text" id="title" name="title"><br>
         <label for="content">Content:</label><br>
         <textarea id="content" name="content"></textarea><br>
-        <button type="submit" name="btn" value="1">작성하기</button>
+        <button type="submit" name="btn" value="1" id="submitBtn" disabled>작성하기</button>
         <button type="submit" name="btn" value="0">뒤로가기</button>
     </form>
 
     <script>
-        document.getElementById('createForm').addEventListener('submit', function(e) {
-            var title = document.getElementById('title').value;
-            var content = document.getElementById('content').value;
-            if (title.trim() === '' || content.trim() === '') {
-                e.preventDefault(); // 폼 제출을 취소합니다.
-                alert('제목과 내용을 모두 입력해주세요.');
+        document.getElementById('createForm').addEventListener('input', function() {
+            var title = document.getElementById('title').value.trim();
+            var content = document.getElementById('content').value.trim();
+            
+            // 제목과 내용이 모두 비어있는 경우 버튼 비활성화
+            if (title === '' || content === '') {
+                document.getElementById('submitBtn').disabled = true;
+            } else {
+                document.getElementById('submitBtn').disabled = false;
             }
         });
     </script>
 </body>
-
 </html>

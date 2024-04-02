@@ -4,16 +4,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>댓글 수정</title>
+    <title>Edit Comment</title>
 </head>
 
 <body>
-    <h1>댓글 수정</h1>
-    <form action="/edit_comment/{{ comment_id }}" method="POST">
-        <label for="comment">댓글 내용:</label><br>
+    <h1>Edit Comment</h1>
+    <form action="/edit_comment/{{ comment_id }}" method="POST" id="editCommentForm">
+        <label for="comment">Comment:</label><br>
         <textarea id="comment" name="comment">{{ comment_text }}</textarea><br>
-        <button type="submit">수정하기</button>
+        <button type="submit" id="submitCommentBtn">Edit Comment</button>
     </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const commentInput = document.getElementById('comment');
+            const submitBtn = document.querySelector('#editCommentForm button[type="submit"]');
+
+            // 입력 필드의 변경을 감지하는 이벤트 리스너 추가
+            commentInput.addEventListener('input', toggleSubmitBtn);
+
+            // 댓글 작성 버튼 활성화/비활성화 함수
+            function toggleSubmitBtn() {
+                const commentValue = commentInput.value.trim();
+                if (commentValue.length > 0) {
+                    submitBtn.disabled = false; // 입력이 있을 때 버튼 활성화
+                } else {
+                    submitBtn.disabled = true; // 입력이 없을 때 버튼 비활성화
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>

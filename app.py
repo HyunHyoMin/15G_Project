@@ -63,6 +63,8 @@ def create():
     if request.method == 'POST' and request.form['btn'] == '1':
         title = request.form['title']
         content = request.form['content']
+        now = datetime.now()
+        date = now.strftime('%Y-%m-%d %H:%M')  # 현재 시간을 문자열로 변환
         conn = sqlite3.connect(DATABASE)
         cur = conn.cursor()
         cur.execute("INSERT INTO posts (title, content, date) VALUES (?, ?, ?)", (title, content, date))
