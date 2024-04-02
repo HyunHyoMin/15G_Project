@@ -29,15 +29,24 @@ def index():
 @app.route('/create/', methods=['GET', 'POST'])
 def create():
     if request.method == 'POST' and request.form['btn'] == '1':
+        username = request.form['username']
+        password = request.form['password']
         title = request.form['title']
         content = request.form['content']
         conn = sqlite3.connect(DATABASE)
         cur = conn.cursor()
-        cur.execute("INSERT INTO posts (title, content, date) VALUES (?, ?, ?)", (title, content, date))
-        conn.commit()
-        new_post_id = cur.lastrowid
-        conn.close()
-        return redirect(f'/post/{new_post_id}')
+        cur.execute("SELECT * FROM users WHERE (username,password)=(?,?)",(username,password))
+        info = cur.fetchone()
+        #입력한 계정이 유효한 경우
+        if not info is None:
+            cur.execute("INSERT INTO posts (username,title, content, date) VALUES (?,?, ?, ?)", (username,title, content, date))
+            conn.commit()
+            new_post_id = cur.lastrowid
+            conn.close()
+            return redirect(f'/post/{new_post_id}')
+        #입력한 계정이 유효하지 않은 경우
+        else :
+            abort(404)
     elif request.method == 'POST' and request.form['btn'] == '0':
         return index()
     return render_template('create.html')
