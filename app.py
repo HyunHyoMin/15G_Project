@@ -81,7 +81,7 @@ def signup():
         cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
         conn.commit()
         conn.close()
-        return redirect('/login')
+        return redirect('/')
     return render_template('signup.html')
 
 
