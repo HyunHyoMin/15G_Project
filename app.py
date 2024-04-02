@@ -71,18 +71,24 @@ def post(post_id):
 
 @app.route('/edit/<int:post_id>', methods=['GET', 'POST'])
 def edit(post_id):
+    conn = sqlite3.connect(DATABASE)
+    cur = conn.cursor()
     if request.method == 'POST':
+        password = request.form['password']
         title = request.form['title']
         content = request.form['content']
-        conn = sqlite3.connect(DATABASE)
-        cur = conn.cursor()
-        cur.execute("UPDATE posts SET title = ?, content = ? WHERE id = ?", (title, content, post_id))
-        conn.commit()
-        conn.close()
-        return redirect(f'/post/{post_id}')
+        cur.execute("SELECT password FROM posts P INNER JOIN users U ON P.username=U.username WHERE P.id = ?", (post_id,))
+        result = cur.fetchall()
+        #cur.fetchall()은 return이 list가 아니라 tuple이라 [0][0]로 접근한다고 하는데
+        #솔직히 왜인지는 잘 모르겠음
+        if result[0][0]==password:
+            cur.execute("UPDATE posts SET title = ?, content = ? WHERE id = ?", (title, content, post_id))
+            conn.commit()
+            conn.close()
+            return redirect(f'/post/{post_id}')
+        else :
+            abort(400)
     else:
-        conn = sqlite3.connect(DATABASE)
-        cur = conn.cursor()
         cur.execute("SELECT * FROM posts WHERE id = ?", (post_id,))
         post = cur.fetchone()
         conn.close()
