@@ -15,15 +15,18 @@
             <h1>글 수정하기</h1></a>
         <form action="/edit/{{ post[0] }}" method="POST">
         </div>
+
         <div class="card-edit">
             <div class="title">
                 제목<input type="text" name="title" value="{{ post[1] }}">
             </div>
+
             <div class="msg">
                 <!-- textarea에서는 input의 value와는 다르게 textarea 안에 내용을 작성하며 tab을 없앤다. -->
                 내용<textarea name="content" placeholder="내용을 입력하세요.">
                     {{ post[2] }}
                 </textarea>
+
                 <div class="US">
                     <input type="file">
                     <span class="secret-checkbox">
@@ -31,9 +34,8 @@
                         <input type="checkbox" name="" id="">
                     </span>
                 </div>
-    <div class="btn-edit">
-        <button type="submit">수정</a></button>
-    </div>
+
+        <button class="btn-edit" type="submit">수정</button>
     </form>
         </div>
 
