@@ -69,13 +69,14 @@
         </div>
         <!-- 게시판을 누를시 첫 페이지인 index.html로 이동 -->
         <div class="btn-home">
-            <a href="index2.html">게시판으로</a>
+            <a href="/">게시판으로</a>
         </div>
         <!-- 수정을 누를시 수정 페이지인 edit2.html로 이동 -->
+        <form action="/edit/{{ post[0] }}" method="GET">
         <div class="btn-view">
-            <a href="edit2.html">수정</a>
+            <a href="/edit/{{ post[0] }}">수정</a>
         </div>
-
+        </form>
     </div>
 </body>
 
