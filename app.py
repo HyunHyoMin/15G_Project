@@ -87,7 +87,11 @@ def edit(post_id):
             conn.close()
             return redirect(f'/post/{post_id}')
         else :
-            abort(400)
+            return '''
+                <script> alert("제출한 비밀번호는 틀렸습니다.");
+                location.href="/"
+                </script>
+                '''
     else:
         cur.execute("SELECT * FROM posts WHERE id = ?", (post_id,))
         post = cur.fetchone()
