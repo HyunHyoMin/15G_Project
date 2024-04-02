@@ -159,13 +159,17 @@ def delete_comment(comment_id):
 def edit_comment(comment_id):        
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
+    #댓글 수정 창에서 수정하기 눌렀을 때
     if request.method == 'POST':
         new_comment_text = request.form['comment']
         cur.execute("UPDATE comments SET comment = ? WHERE id = ?",
                     (new_comment_text, comment_id))
+        cur.execute("SELECT post_id FROM comments WHERE id = ?", (comment_id,))
+        post_id = cur.fetchone()
         conn.commit()
         conn.close()
-        return redirect(request.referrer)
+        return post(post_id[0])
+    #글 창에서 EDIT을 눌렀을 때
     else:
         cur.execute("SELECT * FROM comments WHERE id = ?", (comment_id,))
         comment = cur.fetchone()
