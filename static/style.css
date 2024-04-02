@@ -73,34 +73,37 @@ body {
 
 .card-body div div {
     display: inline-block;
-    padding: 15px 10px 15px 10px;
+    padding: 15px 20px 15px 20px;
     margin: 0;
     border: none;
 }
 
-.card-body .check ,.delete {
-    width: 5%;
-}
-
 .card-body .title {
-    width: 50%;
-    text-align: left;
-}
-
-.card-body .date {
-    width: 10%;
-    text-align : right;
+    float: left;
+    width: 40%;
+    text-align: center;
 }
 
 .card-body .writer {
+    float: left;
     width: 10%;
     text-align : right;
 
 }
 
+
+.card-body .date {
+    float: right;
+    width: 25%;
+    text-align : right;
+}
+
+
 .card-body .delete button {
+    float: right;
     background-color: #fff;
     border: none;
+    width: 10%;
 }
 
 
@@ -125,6 +128,30 @@ body {
 
 .number li a.active {
     background-color: rgb(179, 187, 255);
+}
+
+.btn-home {
+    position: absolute;
+    right: 20;
+    bottom: 0;
+    padding: 10px;
+    margin: 10px 10px 20px 10px;
+}
+
+.btn-container {
+    /* position: absolute; 는 절대적인 값으로 상대적인 값이 필요하다. */
+    /* 상대적인 값은 전체 영역을 담당하는 class="card"에 position: relative; 을 추가한다. */
+    position: absolute; /* 절대적인 값 */
+    left: 0;
+    bottom: 0;
+    padding: 10px;
+    margin: 10px 10px 20px 10px  ;
+}
+.btn-container a {
+    padding: 10px;
+    background-color: rgb(83, 71, 255);
+    color: #fff;
+    border-radius: 10px;
 }
 
 .btn {
@@ -205,14 +232,13 @@ body {
     bottom: 0;
     margin: 10px 10px 20px 10px;
     padding: 10px;
-}
-
-.btn-w a {
     background-color: rgb(83, 71, 255);
     padding: 10px;
     color: #fff;
     border-radius: 10px;
 }
+
+
 
 /* post2의 css */
 
