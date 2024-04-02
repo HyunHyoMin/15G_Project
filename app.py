@@ -1,5 +1,6 @@
 from flask import Flask, request, redirect, render_template, abort
 import sqlite3
+from models import create_table_comments, create_table_posts, create_table_users
 from datetime import datetime
 
 app = Flask(__name__)
@@ -7,36 +8,6 @@ app = Flask(__name__)
 now = datetime.now()
 date = now.strftime('%Y-%m-%d %H:%M')
 DATABASE = 'database.db'
-
-def create_table():
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
-    cur.execute('''
-        CREATE TABLE IF NOT EXISTS posts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            content TEXT NOT NULL,
-            date TEXT NOT NULL
-        )
-    ''')
-    conn.commit()
-    conn.close()
-
-def create_table_comments():
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
-    cur.execute('''
-        CREATE TABLE IF NOT EXISTS comments (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            post_id INTEGER NOT NULL,
-            comment TEXT NOT NULL,
-            date TEXT NOT NULL
-        )
-    ''')
-    conn.commit()
-    conn.close()
-
-from datetime import datetime
 
 @app.route('/')
 def index():
@@ -53,9 +24,6 @@ def index():
     sorted_posts = sorted(formatted_posts, key=lambda x: (x[2], x[0]), reverse=True)
 
     return render_template('index.html', posts=sorted_posts)
-
-
-
 
 
 @app.route('/create/', methods=['GET', 'POST'])
@@ -170,7 +138,21 @@ def edit_comment(comment_id):
         conn.close()
         return render_template('edit_comment.html', comment_id=comment[0], comment_text=comment[2])
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        conn = sqlite3.connect(DATABASE)
+        cur = conn.cursor()
+        cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+        conn.commit()
+        conn.close()
+        return redirect('/')
+    return render_template('signup.html')
+
 if __name__ == '__main__':
-    create_table()
+    create_table_posts()
+    create_table_users
     create_table_comments()
     app.run(debug=True)
