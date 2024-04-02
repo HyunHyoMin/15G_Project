@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+    <title>글 수정하기</title>
+</head>
+
+<body>
+    <div class="card">
+        <div class="card-header4">
+            <h1>글 수정하기</h1></a>
+        </div>
+        <div class="card-edit">
+            <div class="title">
+                제목<input type="text" placeholder="제목을 입력하세요." value="안녕하세요. 이것은 게시판 제목입니다.">
+            </div>
+            <div class="msg">
+                <!-- textarea에서는 input의 value와는 다르게 textarea 안에 내용을 작성하며 tab을 없앤다. -->
+                내용<textarea placeholder="내용을 입력하세요.">
+동해물과 백두산이 마르고 닳도록
+하느님이 보우하사 우리나라 만세
+무궁화 삼천리 화려 강산
+대한 사람 대한으로 길이 보전하세
+                </textarea>
+                <div class="US">
+                    <input type="file">
+                    <span class="secret-checkbox">
+                        <span class="text-checkbox">비밀 글</span>
+                        <input type="checkbox" name="" id="">
+                    </span>
+                </div>
+            </div>
+
+            <div class="btn-edit">
+                <a href="index2.html">수정</a>
+            </div>
+        </div>
+
+
+</body>
+
+</html>
