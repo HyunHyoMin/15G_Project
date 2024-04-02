@@ -44,9 +44,9 @@ def create():
             new_post_id = cur.lastrowid
             conn.close()
             return redirect(f'/post/{new_post_id}')
-        #입력한 계정이 유효하지 않은 경우
+        #입력한 계정이 유효하지 않은(회원가입 되어 있지 않은) 경우
         else :
-            abort(404)
+            abort(400)
     elif request.method == 'POST' and request.form['btn'] == '0':
         return index()
     return render_template('create.html')
