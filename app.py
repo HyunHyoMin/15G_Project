@@ -156,19 +156,17 @@ def delete_comment(comment_id):
 
 
 @app.route('/edit_comment/<int:comment_id>', methods=['GET', 'POST'])
-def edit_comment(comment_id):
+def edit_comment(comment_id):        
+    conn = sqlite3.connect(DATABASE)
+    cur = conn.cursor()
     if request.method == 'POST':
         new_comment_text = request.form['comment']
-        conn = sqlite3.connect(DATABASE)
-        cur = conn.cursor()
         cur.execute("UPDATE comments SET comment = ? WHERE id = ?",
                     (new_comment_text, comment_id))
         conn.commit()
         conn.close()
         return redirect(request.referrer)
     else:
-        conn = sqlite3.connect(DATABASE)
-        cur = conn.cursor()
         cur.execute("SELECT * FROM comments WHERE id = ?", (comment_id,))
         comment = cur.fetchone()
         conn.close()
