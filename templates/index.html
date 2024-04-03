@@ -47,12 +47,14 @@
                 <a href="/signup">회원가입</a>
             </div>
         </form>
-        
+
         {% else %}
-        <p>환영합니다. 15G는 {{ logged_id }}님!</p>
-        <form action="/logout" method="GET">
-            <button type="submit">로그아웃</button>
-        </form>
+        <div class="logged">
+            <p>환영합니다. 15G는 {{ logged_id }}님!</p>
+            <form action="/logout" method="GET">
+                <button type="submit" class="btn-logout">로그아웃</button>
+            </form>
+        </div>
         {% endif %}
 
         <!-- 1-2. 내용은 class="card-body"로 <div>로 구역 설정 -->
