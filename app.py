@@ -213,13 +213,21 @@ def create_comment(post_id):
     print(comment_text)
     # comment에 내용이 있을 경우
     if comment_text:
-        conn = sqlite3.connect(DATABASE)
-        cur = conn.cursor()
-        cur.execute("INSERT INTO comments (post_id, comment, date) VALUES (?, ?, ?)",
-                    (post_id, comment_text, date))
-        conn.commit()
-        conn.close()
-        return redirect(f'/post/{post_id}')
+        # 로그인을 하고 있는 경우
+        if session.get("logged_in"):
+            conn = sqlite3.connect(DATABASE)
+            cur = conn.cursor()
+            cur.execute("INSERT INTO comments (post_id, comment, date) VALUES (?, ?, ?)",
+                        (post_id, comment_text, date))
+            conn.commit()
+            conn.close()
+            return redirect(f'/post/{post_id}')
+        else :
+            return '''
+                    <script> alert("댓글을 다시려면 로그인하셔야 합니다.");
+                    location.href="/"
+                    </script>
+                    '''
     # comment가 blank인 경우
     else:
         return f'''
