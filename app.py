@@ -151,15 +151,40 @@ def edit(post_id):
 
 @app.route('/delete/<int:post_id>', methods=['POST'])  # 메소드를 POST로 변경
 def delete(post_id):
-    #
+    # index.html 에서 삭제하기를 누른 경우
     if request.method == 'POST':
         if request.form.get('confirm_delete') == '1':
-            conn = sqlite3.connect(DATABASE)
-            cur = conn.cursor()
-            cur.execute("DELETE FROM posts WHERE id=?", (post_id,))
-            cur.execute("DELETE FROM comments WHERE post_id=?", (post_id,))
-            conn.commit()
-            conn.close()
+            #로그인을 하지 않은 경우
+            if not session.get("logged_in"):
+                return '''
+                <script> alert("삭제 권한이 없습니다. 로그인을 해주세요.");
+                location.href="/"
+                </script>
+                '''
+            #로그인을 한 경우
+            else :
+                conn = sqlite3.connect(DATABASE)
+                cur = conn.cursor()
+                username = session["username"]
+                cur.execute(
+                "SELECT password FROM users WHERE username=?", (username,))
+                #로그인 정보
+                password =cur.fetchone()[0]
+                #게시글 정보
+                cur.execute(
+                "SELECT P.username,password FROM posts P INNER JOIN users U ON P.username=U.username WHERE P.id = ?", (post_id,))
+                result = cur.fetchall()
+                if result[0][0]==username and result[0][1]==password:
+                    cur.execute("DELETE FROM posts WHERE id=?", (post_id,))
+                    cur.execute("DELETE FROM comments WHERE post_id=?", (post_id,))
+                    conn.commit()
+                    conn.close()
+                else :
+                    return '''
+                    <script> alert("삭제 권한이 없습니다.");
+                    location.href="/"
+                    </script>
+                    '''
             return index()
     else:
         return "Method Not Allowed", 405  # 잘못된 메소드를 수신할 경우 에러 코드 405를 반환
