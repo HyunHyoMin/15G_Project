@@ -54,7 +54,7 @@
                     {% if comments %}
                     <ul>
                         {% for comment in comments %}
-                        <li>{{ comment[2] }} | <a href="/edit_comment/{{ comment[0] }}">Edit</a> | <a
+                        <li>{{ comment[2] }} | {{ comment[3] }} |<a href="/edit_comment/{{ comment[0] }}">Edit</a> | <a
                                 href="/delete_comment/{{ comment[0] }}">Delete</a></li>
                         {% endfor %}
                     </ul>

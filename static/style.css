@@ -4,11 +4,15 @@
 }
 
 li {
-    list-style: non; /* list 생성시 나오는 '-' 마크 제거 */
+    /* list 생성시 나오는 '-' 마크 제거 */
+    list-style: non;
+    /* 댓글 창의 숫자 제거 */
+    list-style-type: none;
 }
 
 a {
-    color: inherit; /* 글자 색생은 부모로부터 상속 */
+    color: inherit;
+    /* 글자 색생은 부모로부터 상속 */
     text-decoration: none;
 }
 
@@ -31,7 +35,8 @@ body {
     /* offset x:는 얼마나, y:는 얼마나 blur:흐림정도는 얼마나 color:색은 어떤걸로*/
 
     border-radius: 20px;
-    position: relative; /* 상대적인 값 */
+    position: relative;
+    /* 상대적인 값 */
 }
 
 .card-header {
@@ -78,7 +83,8 @@ body {
     border: none;
 }
 
-.card-body .check ,.delete {
+.card-body .check,
+.delete {
     width: 10%;
 }
 
@@ -89,18 +95,20 @@ body {
 
 .card-body .date {
     width: 20%;
-    text-align : right;
+    text-align: right;
 }
 
 .card-body .writer {
     width: 10%;
-    text-align : right;
+    text-align: right;
 
 }
 
 .card-body .delete button {
     background-color: #fff;
     border: none;
+    color: red;
+    font-weight: bold;
 }
 
 
@@ -113,7 +121,7 @@ body {
 }
 
 .number li a {
-    display: block; 
+    display: block;
     width: 40px;
     /* text-align이 위로 올라간다 */
     line-height: 40px;
@@ -130,12 +138,14 @@ body {
 .btn {
     /* position: absolute; 는 절대적인 값으로 상대적인 값이 필요하다. */
     /* 상대적인 값은 전체 영역을 담당하는 class="card"에 position: relative; 을 추가한다. */
-    position: absolute; /* 절대적인 값 */
+    position: absolute;
+    /* 절대적인 값 */
     right: 0;
     bottom: 0;
     padding: 10px;
-    margin: 10px 10px 20px 10px  ;
+    margin: 10px 10px 20px 10px;
 }
+
 .btn a {
     padding: 10px;
     background-color: rgb(83, 71, 255);
@@ -144,7 +154,7 @@ body {
 }
 
 
-/* create2의 css 구역*/
+/* create의 css 구역*/
 
 .card-header1 h1 {
     padding: 20px;
@@ -158,7 +168,8 @@ body {
     padding: 20px;
 }
 
-.card-write input, textarea{
+.card-write input,
+textarea {
     margin-left: 10px;
     padding: 10px;
     border: 1px solid #999;
@@ -170,6 +181,7 @@ body {
     width: 26%;
     margin-right: 30px;
 }
+
 .card-write .myinfo input[type="password"] {
     width: 26%;
     margin-right: 30px;
@@ -199,22 +211,31 @@ body {
     margin-left: 40px;
 }
 
-.btn-w {
-    position: absolute;
-    right: 0;
-    bottom: 0;
+.btn-wb {
     margin: 10px 10px 20px 10px;
     padding: 10px;
 }
 
-.btn-w a {
+.btn-back {
+    float: left;
     background-color: rgb(83, 71, 255);
     padding: 10px;
     color: #fff;
     border-radius: 10px;
+    margin-left: 30px;
 }
 
-/* post2의 css */
+.btn-write {
+    float: right;
+    background-color: rgb(83, 71, 255);
+    padding: 10px;
+    color: #fff;
+    border-radius: 10px;
+    margin-right: 30px;
+}
+
+
+/* post의 css */
 
 .card-header3 h1 {
     padding: 20px;
@@ -249,7 +270,8 @@ body {
     display: inline-block;
 }
 
-.card-view .myinfo dl dt, dd {
+.card-view .myinfo dl dt,
+dd {
     display: inline-block;
     font-size: small;
 }
@@ -302,7 +324,7 @@ body {
     padding-bottom: 10px;
 }
 
-.writebtn{
+.writebtn {
     padding: 10px;
     border-radius: 10px;
     background-color: rgb(83, 71, 255);
@@ -340,7 +362,7 @@ body {
     color: #fff;
 }
 
-/* edit2의 css 구역 */
+/* edit의 css 구역 */
 
 .card-header4 h1 {
     padding: 20px;
@@ -402,21 +424,19 @@ body {
 
 .text-checkbox {
     width: 50%;
-    margin-right: 0.1rem; /* 텍스트와 체크박스 사이의 간격 */
+    margin-right: 0.1rem;
+    /* 텍스트와 체크박스 사이의 간격 */
 
 }
 
-
 .btn-edit {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    margin: 10px 10px 20px 10px;
+    float: right;
+    margin: 50px 50px 20px 10px;
     padding: 10px;
     background-color: rgb(83, 71, 255);
     color: #fff;
     border-radius: 10px;
-    cursor : pointer
+    cursor: pointer
 }
 
 .btn-container {
@@ -428,5 +448,58 @@ body {
     background-color: rgb(83, 71, 255);
     color: #fff;
     border-radius: 10px;
-    cursor : pointer
+    cursor: pointer
 }
+
+/* login의 css 구역 */
+
+.login-title {
+    padding: 20px;
+    text-align: center;
+    margin: 50px 10px 10px 10px;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+
+.login-vlew {
+    text-align: center;
+    border-top: 1px solid #999;
+    border-bottom: 1px solid #999;
+    margin: auto;
+    /*<!-- 폭을 400px 고정 -->*/
+    width: 600px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+#username {
+    width: 300px;
+    height: 25px;
+    margin-top: 10px;
+    margin-bottom: 50px;
+}
+
+#password {
+    width: 300px;
+    height: 25px;
+    margin-top: 10px;
+    margin-bottom: 50px;
+}
+
+#re_password {
+    width: 300px;
+    height: 25px;
+    margin-top: 10px;
+    margin-bottom: 50px;
+}
+
+
+#btn-signup {
+    margin: 50px 20px 20px 10px;
+    padding: 10px;
+    background-color: rgb(83, 71, 255);
+    color: #fff;
+    border-radius: 10px;
+}
+
