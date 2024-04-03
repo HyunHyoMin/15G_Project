@@ -1,9 +1,10 @@
-from flask import Flask, request, redirect, render_template, abort
+from flask import Flask, request, redirect, render_template, abort, session
 import sqlite3
 from models import create_table_comments, create_table_posts, create_table_users
 from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = '15G is secret_key'
 
 now = datetime.now()
 date = now.strftime('%Y-%m-%d %H:%M')
@@ -24,11 +25,34 @@ def index():
         post[4], '%Y-%m-%d %H:%M')) for post in posts]
 
     # 시간이 같은 경우 먼저 등록된 게시글이 아래로 가도록 정렬합니다.
-    sorted_posts = sorted(
-        formatted_posts, key=lambda x: (x[4], x[0]), reverse=True)
-
+    sorted_posts = sorted(formatted_posts, key=lambda x: (x[4], x[0]), reverse=True)
+    
+    if session.get("logged_in"):
+        return render_template('index.html', posts=sorted_posts, logged_id=session["username"])
+    
     return render_template('index.html', posts=sorted_posts)
 
+@app.route("/login", methods=["POST"])
+def login():
+    login_id = request.form.get("login_id")
+    login_pw = request.form.get("login_pw")
+    
+    conn = sqlite3.connect(DATABASE)
+    cur = conn.cursor()
+    cur.execute("SELECT username, password FROM users WHERE username = ?", (login_id,))
+    user_info = cur.fetchone()
+    conn.close()
+    
+    if user_info and user_info[1] == login_pw:
+        session['logged_in'] = True
+        session['username'] = user_info[0]
+        return redirect('/')
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    session.pop('username', None)
+    return redirect('/')
 
 @app.route('/create/', methods=['GET', 'POST'])
 def create():
@@ -158,18 +182,28 @@ def create_comment(post_id):
         '''
 
 
+@app.route('/delete_comment/<int:comment_id>', methods=['GET'])
+def delete_comment(comment_id):
+    conn = sqlite3.connect(DATABASE)
+    cur = conn.cursor()
+    cur.execute("DELETE FROM comments WHERE id=?", (comment_id,))
+    conn.commit()
+    conn.close()
+    return redirect(request.referrer)
+
+
 @app.route('/edit_comment/<int:comment_id>', methods=['GET', 'POST'])
 def edit_comment(comment_id):
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
-    # 댓글 수정 창에서 수정하기 눌렀을 때
+    # edit_comment.html 에서 수정하기 눌렀을 때
     if request.method == 'POST':
         new_comment_text = request.form['comment']
         cur.execute("UPDATE comments SET comment = ? WHERE id = ?",
                     (new_comment_text, comment_id))
         conn.commit()
         conn.close()
-        return redirect('/post/{}'.format(get_post_id_of_comment(comment_id)))  # Redirect to the post where the comment belongs
+        return post(post_id[0])
     # 글 창에서 EDIT을 눌렀을 때
     else:
         cur.execute("SELECT * FROM comments WHERE id = ?", (comment_id,))
@@ -228,7 +262,6 @@ def signup():
                 </script>
                 '''
     return render_template('signup.html')
-
 
 if __name__ == '__main__':
     create_table_users()
