@@ -13,18 +13,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
 
     <title>15G는 게시판</title>
-</head>
 
-<body>
-    <!-- 1. 게시판의 화면은 class="card"로 적용 -->
-    <div class="card">
-
-        <!-- 1-1. 게시판 이름은 class="card-header"로  <div>로 구역 설정 -->
-        <div class="card-header">
-            <h1><a href="/">15G는 게시판</a></h1>
-        </div>
-
-        {% if not session.get("logged_in") %}
+    {% if not session.get("logged_in") %}
         <div id="modal1" class="modal">
             <p>
             <form action="/login" method="POST">
@@ -54,6 +44,18 @@
             </form>
         </div>
         {% endif %}
+</head>
+
+<body>
+    <!-- 1. 게시판의 화면은 class="card"로 적용 -->
+    <div class="card">
+
+        <!-- 1-1. 게시판 이름은 class="card-header"로  <div>로 구역 설정 -->
+        <div class="card-header">
+            <h1><a href="/">15G는 게시판</a></h1>
+        </div>
+
+        
 
         <!-- 1-2. 내용은 class="card-body"로 <div>로 구역 설정 -->
         <div class="card-body">

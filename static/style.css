@@ -89,7 +89,7 @@ body {
 }
 
 .card-body .title {
-    width: 50%;
+    width: 30%;
     text-align: left;
 }
 
@@ -99,7 +99,7 @@ body {
 }
 
 .card-body .writer {
-    width: 10%;
+    width: 30%;
     text-align: right;
 
 }
@@ -451,7 +451,7 @@ dd {
 .btn-container {
     position: absolute;
     top: 10px;
-    right: 10px;
+    right: 255px;
     margin: 10px 10px 20px 10px;
     padding: 10px;
     background-color: rgb(83, 71, 255);
@@ -463,7 +463,7 @@ dd {
 .btn-login {
     position: absolute;
     top: 10px;
-    right: 100px;
+    right: 345px;
     margin: 10px 10px 20px 10px;
     padding: 10px;
     background-color: rgb(83, 71, 255);
@@ -551,19 +551,17 @@ dd {
     position: absolute;
     color : red;
     border-radius: 10px;
-    background-color: #E2E2E2;
+    background-color: #ffffff;
     padding-top : 5px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 10px;
+    padding-right: 180px;
     padding-bottom: 10px;
-    top : 10px;
-    right : 10px;
+    top : 1px;
+    right : 50px;
 }
 
 .btn-logout {
     /* position: absolute; */
-    top: 20px;
-    right: 8px;
     margin: 5px 5px 5px 5px;
     padding: 10px;
     background-color: rgb(83, 71, 255);
