@@ -341,7 +341,7 @@ def search():
     search_post = cur.fetchall()
     conn.close()
     if post:
-        return render_template('index.html', search_post=search_post)
+        return render_template('index.html', search_post=search_post, logged_id=session["username"])
 
 if __name__ == '__main__':
     create_table_users()
