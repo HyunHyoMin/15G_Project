@@ -48,6 +48,12 @@ def login():
         session['logged_in'] = True
         session['username'] = user_info[0]
         return redirect('/')
+    else:
+        return '''
+            <script> alert("아이디 또는 비밀번호가 잘못되었습니다.");
+            location.href="/"
+            </script>
+            '''
 
 @app.route('/logout')
 def logout():
