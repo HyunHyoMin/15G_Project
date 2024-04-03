@@ -120,13 +120,16 @@ def edit(post_id):
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
     # edit.html에서 수정을 누른 경우
-    if request.method == 'POST':
+    if request.method == 'POST' and request.form['btn'] == '1':
         title = request.form['title']
         content = request.form['content']
         cur.execute(
             "UPDATE posts SET title = ?, content = ? WHERE id = ?", (title, content, post_id))
         conn.commit()
         conn.close()
+        return redirect(f'/post/{post_id}')
+    # edit.html에서 뒤로가기 누른 경우
+    elif request.method == 'POST' and request.form['btn'] == '0':
         return redirect(f'/post/{post_id}')
     # post.html 에서 수정을 누른 경우    
     else:
