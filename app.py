@@ -2,6 +2,7 @@ from flask import Flask, request, redirect, render_template, abort, session
 import sqlite3
 from models import create_table_comments, create_table_posts, create_table_users
 from datetime import datetime
+import re
 
 app = Flask(__name__)
 app.secret_key = '15G is secret_key'
@@ -186,10 +187,15 @@ def create_comment(post_id):
 def delete_comment(comment_id):
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
+    cur.execute("SELECT post_id FROM comments WHERE id = ?", (comment_id,))
+    post_id = cur.fetchone()
     cur.execute("DELETE FROM comments WHERE id=?", (comment_id,))
     conn.commit()
     conn.close()
-    return redirect(request.referrer)
+    return post(post_id[0])
+    # 이전에는 comment_id로 post_id를 이용해서 redirect했었는데
+    # DELETE 이후, 댓글이 없어지면 접근할 수 없어지기 때문에
+    # DELETE 이전에 post_id를 가져오고서 transaction 시행 -> post(post_id) 호출
 
 
 @app.route('/edit_comment/<int:comment_id>', methods=['GET', 'POST'])
@@ -201,40 +207,53 @@ def edit_comment(comment_id):
         new_comment_text = request.form['comment']
         cur.execute("UPDATE comments SET comment = ? WHERE id = ?",
                     (new_comment_text, comment_id))
+        cur.execute("SELECT post_id FROM comments WHERE id = ?", (comment_id,))
+        post_id = cur.fetchone()
         conn.commit()
         conn.close()
         return post(post_id[0])
-    # 글 창에서 EDIT을 눌렀을 때
+    # post.html 에서 EDIT을 눌렀을 때
     else:
         cur.execute("SELECT * FROM comments WHERE id = ?", (comment_id,))
         comment = cur.fetchone()
         conn.close()
         return render_template('edit_comment.html', comment_id=comment[0], comment_text=comment[2])
 
-def get_post_id_of_comment(comment_id):
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
-    cur.execute("SELECT post_id FROM comments WHERE id = ?", (comment_id,))
-    post_id = cur.fetchone()
-    conn.close()
-    if post_id:
-        return post_id[0]
-    return None
 
-@app.route('/delete_comment/<int:comment_id>', methods=['GET'])
-def delete_comment(comment_id):
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
-    cur.execute("DELETE FROM comments WHERE id=?", (comment_id,))
-    conn.commit()
-    conn.close()
-    return redirect(request.referrer)
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['username'].strip()  # 공백 제거
         password = request.form['password']
         re_password = request.form['re_password']
+        
+        # 1. 공백칸 회원가입 불가능
+        if not (username and password and re_password):
+            return '''
+                <script> alert("모든 항목을 입력해주세요.");
+                location.href="/signup"
+                </script>
+                '''
+        
+        # 2. 이메일 형식으로만 회원가입 가능
+        if not re.match(r'^[\w\.-]+@[\w\.-]+$', username):
+            return '''
+                <script> alert("올바른 이메일 주소를 입력해주세요.");
+                location.href="/signup"
+                </script>
+                '''
+
+        # 3. 비밀번호 조건
+        if len(password) < 8 or not any(char.isdigit() for char in password) \
+                or not any(char.islower() for char in password) \
+                or not any(char.isupper() for char in password):
+            return '''
+                <script> alert("비밀번호는 8자 이상이어야 하며, 특수문자, 대문자, 소문자가 최소 하나씩 포함되어야 합니다.");
+                location.href="/signup"
+                </script>
+                '''
+
+        # 4. 회원가입 성공
         conn = sqlite3.connect(DATABASE)
         cur = conn.cursor()
         cur.execute("SELECT username FROM users")
