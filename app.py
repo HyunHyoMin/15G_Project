@@ -121,32 +121,43 @@ def edit(post_id):
     cur = conn.cursor()
     # edit.html에서 수정을 누른 경우
     if request.method == 'POST':
-        password = request.form['password']
         title = request.form['title']
         content = request.form['content']
         cur.execute(
-            "SELECT password FROM posts P INNER JOIN users U ON P.username=U.username WHERE P.id = ?", (post_id,))
-        result = cur.fetchall()
-        # cur.fetchall()은 return이 list가 아니라 tuple이라 [0][0]로 접근한다고 하는데
-        # 솔직히 왜인지는 잘 모르겠음
-        if result[0][0] == password:
-            cur.execute(
-                "UPDATE posts SET title = ?, content = ? WHERE id = ?", (title, content, post_id))
-            conn.commit()
-            conn.close()
-            return redirect(f'/post/{post_id}')
-        else:
-            return '''
-                <script> alert("제출한 비밀번호는 틀렸습니다.");
+            "UPDATE posts SET title = ?, content = ? WHERE id = ?", (title, content, post_id))
+        conn.commit()
+        conn.close()
+        return redirect(f'/post/{post_id}')
+    # post.html 에서 수정을 누른 경우    
+    else:
+        if not session.get("logged_in"):
+                return '''
+                <script> alert("수정 권한이 없습니다. 로그인을 해주세요.");
                 location.href="/"
                 </script>
                 '''
-    # post.html 에서 수정을 누른 경우    
-    else:
-        cur.execute("SELECT * FROM posts WHERE id = ?", (post_id,))
-        post = cur.fetchone()
-        conn.close()
-        return render_template('edit.html', post=post)
+        #로그인을 한 경우
+        else :
+            #로그인 정보
+            username = session["username"]
+            cur.execute(
+            "SELECT password FROM users WHERE username=?", (username,))
+            password =cur.fetchone()[0]
+            #게시글 정보
+            cur.execute(
+            "SELECT P.username,password FROM posts P INNER JOIN users U ON P.username=U.username WHERE P.id = ?", (post_id,))
+            result = cur.fetchall()
+            if result[0][0]==username and result[0][1]==password:
+                cur.execute("SELECT * FROM posts WHERE id = ?", (post_id,))
+                post = cur.fetchone()
+                conn.close()
+                return render_template('edit.html', post=post)
+            else :
+                return f'''
+                <script> alert("수정 권한이 없습니다.");
+                location.href="/post/{post_id}"
+                </script>
+                '''
 
 
 @app.route('/delete/<int:post_id>', methods=['POST'])  # 메소드를 POST로 변경
