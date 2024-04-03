@@ -4,8 +4,10 @@
 }
 
 li {
-    list-style: non;
     /* list 생성시 나오는 '-' 마크 제거 */
+    list-style: non;
+    /* 댓글 창의 숫자 제거 */
+    list-style-type: none;
 }
 
 a {
