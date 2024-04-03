@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
     <title>댓글 수정</title>
-</head>
+  </head>
 
-<body>
-    <h1>댓글 수정</h1>
-    <form action="/edit_comment/{{ comment_id }}" method="POST">
-        <label for="comment">댓글 내용:</label><br>
-        <textarea id="comment" name="comment">{{ comment_text }}</textarea><br>
-        <button type="submit">수정하기</button>
-    </form>
-</body>
+  <body>
+    <div class="card">
+        <div class="card-header4">
+      <h1>댓글 수정하기</h1>
+      <form action="/edit_comment/{{ comment_id }}" method="POST">
+    </div>
+    <div class="card-edit">
+    <div class="msg">
 
+    댓글<textarea id="comment" name="comment" placeholder="댓글을 수정해 주세요.">{{ comment_text }}</textarea><br />
+    </div>
+    </div>
+        <button class="btn-comment" type="submit">수정하기</button>
+      </form>
+    </div>
+  </body>
 </html>

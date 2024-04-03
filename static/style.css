@@ -514,3 +514,15 @@ dd {
     border-radius: 10px;
 }
 
+
+/* edit_comment css*/
+
+.btn-comment {
+    float: right;
+    margin: 10px 70px 20px 20px;
+    padding: 10px;
+    background-color: rgb(83, 71, 255);
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer
+}
