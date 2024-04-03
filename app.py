@@ -65,12 +65,20 @@ def logout():
 def create():
     # create.html에서 글을 다 쓰고, 작성하기를 누른 경우
     if request.method == 'POST' and request.form['btn'] == '1':
-        username = request.form['username']
-        password = request.form['password']
-        title = request.form['title']
-        content = request.form['content']
         conn = sqlite3.connect(DATABASE)
         cur = conn.cursor()
+        #로그인을 하지 않은 경우
+        if not session.get("logged_in"):
+            username = request.form['username']
+            password = request.form['password']
+        #로그인을 한 경우    
+        else :
+            username = session["username"]
+            cur.execute(
+            "SELECT password FROM users WHERE username=?", (username,))
+            password = cur.fetchone()[0]
+        title = request.form['title']
+        content = request.form['content']
         cur.execute(
             "SELECT * FROM users WHERE (username,password)=(?,?)", (username, password))
         info = cur.fetchone()
