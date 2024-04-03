@@ -10,6 +10,7 @@ now = datetime.now()
 date = now.strftime('%Y-%m-%d %H:%M')
 DATABASE = 'database.db'
 
+
 @app.route('/')
 def index():
     conn = sqlite3.connect(DATABASE)
@@ -20,11 +21,15 @@ def index():
     conn.close()
 
     # 등록된 날짜와 시간을 datetime 객체로 변환합니다.
-    formatted_posts = [(post[0], post[1], datetime.strptime(post[2], '%Y-%m-%d %H:%M')) for post in posts]
+    formatted_posts = [(post[0], post[1], post[2], post[3], datetime.strptime(
+        post[4], '%Y-%m-%d %H:%M')) for post in posts]
 
     # 시간이 같은 경우 먼저 등록된 게시글이 아래로 가도록 정렬합니다.
-    sorted_posts = sorted(formatted_posts, key=lambda x: (x[2], x[0]), reverse=True)
-
+    sorted_posts = sorted(formatted_posts, key=lambda x: (x[4], x[0]), reverse=True)
+    
+    if session.get("logged_in"):
+        return render_template('index.html', posts=sorted_posts, logged_id=session["username"])
+    
     return render_template('index.html', posts=sorted_posts)
 
 @app.route("/login", methods=["POST"])
@@ -51,23 +56,29 @@ def logout():
 
 @app.route('/create/', methods=['GET', 'POST'])
 def create():
+    # create.html에서 글을 다 쓰고, 작성하기를 누른 경우
     if request.method == 'POST' and request.form['btn'] == '1':
+        username = request.form['username']
+        password = request.form['password']
         title = request.form['title']
         content = request.form['content']
         conn = sqlite3.connect(DATABASE)
         cur = conn.cursor()
-        cur.execute("SELECT * FROM users WHERE (username,password)=(?,?)",(username,password))
+        cur.execute(
+            "SELECT * FROM users WHERE (username,password)=(?,?)", (username, password))
         info = cur.fetchone()
         # 입력한 계정이 유효한 경우
         if not info is None:
-            cur.execute("INSERT INTO posts (username,title, content, date) VALUES (?,?, ?, ?)", (username, title, content, date))
+            cur.execute("INSERT INTO posts (username,title, content, date) VALUES (?,?, ?, ?)",
+                        (username, title, content, date))
             conn.commit()
             new_post_id = cur.lastrowid
             conn.close()
             return redirect(f'/post/{new_post_id}')
-        #입력한 계정이 유효하지 않은 경우
-        else :
-            abort(404)
+        # 입력한 계정이 유효하지 않은(회원가입 되어 있지 않은) 경우 = Bad request
+        else:
+            abort(400)
+    # create.html에서 뒤로가기를 누른 경우
     elif request.method == 'POST' and request.form['btn'] == '0':
         return index()
     # index.html에서 글쓰기를 누른 경우
@@ -91,19 +102,32 @@ def post(post_id):
 
 @app.route('/edit/<int:post_id>', methods=['GET', 'POST'])
 def edit(post_id):
+    conn = sqlite3.connect(DATABASE)
+    cur = conn.cursor()
+    # edit.html에서 수정을 누른 경우
     if request.method == 'POST':
         password = request.form['password']
         title = request.form['title']
         content = request.form['content']
-        conn = sqlite3.connect(DATABASE)
-        cur = conn.cursor()
-        cur.execute("UPDATE posts SET title = ?, content = ? WHERE id = ?", (title, content, post_id))
-        conn.commit()
-        conn.close()
-        return redirect(f'/post/{post_id}')
+        cur.execute(
+            "SELECT password FROM posts P INNER JOIN users U ON P.username=U.username WHERE P.id = ?", (post_id,))
+        result = cur.fetchall()
+        # cur.fetchall()은 return이 list가 아니라 tuple이라 [0][0]로 접근한다고 하는데
+        # 솔직히 왜인지는 잘 모르겠음
+        if result[0][0] == password:
+            cur.execute(
+                "UPDATE posts SET title = ?, content = ? WHERE id = ?", (title, content, post_id))
+            conn.commit()
+            conn.close()
+            return redirect(f'/post/{post_id}')
+        else:
+            return '''
+                <script> alert("제출한 비밀번호는 틀렸습니다.");
+                location.href="/"
+                </script>
+                '''
+    # post.html 에서 수정을 누른 경우    
     else:
-        conn = sqlite3.connect(DATABASE)
-        cur = conn.cursor()
         cur.execute("SELECT * FROM posts WHERE id = ?", (post_id,))
         post = cur.fetchone()
         conn.close()
@@ -139,12 +163,23 @@ def view_comments(post_id):
 @app.route('/create_comment/<int:post_id>', methods=['POST'])
 def create_comment(post_id):
     comment_text = request.form['comment']
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
-    cur.execute("INSERT INTO comments (post_id, comment, date) VALUES (?, ?, ?)", (post_id, comment_text, date))
-    conn.commit()
-    conn.close()
-    return redirect(f'/post/{post_id}')
+    print(comment_text)
+    # comment에 내용이 있을 경우
+    if comment_text:
+        conn = sqlite3.connect(DATABASE)
+        cur = conn.cursor()
+        cur.execute("INSERT INTO comments (post_id, comment, date) VALUES (?, ?, ?)",
+                    (post_id, comment_text, date))
+        conn.commit()
+        conn.close()
+        return redirect(f'/post/{post_id}')
+    # comment가 blank인 경우
+    else:
+        return f'''
+        <script> alert("빈 댓글은 게시할 수 없습니다");
+        location.href="/post/{post_id}"
+        </script>
+        '''
 
 
 @app.route('/delete_comment/<int:comment_id>', methods=['GET'])
@@ -162,7 +197,6 @@ def delete_comment(comment_id):
     # DELETE 이전에 post_id를 가져오고서 transaction 시행 -> post(post_id) 호출
 
 
-
 @app.route('/edit_comment/<int:comment_id>', methods=['GET', 'POST'])
 def edit_comment(comment_id):
     conn = sqlite3.connect(DATABASE)
@@ -170,9 +204,10 @@ def edit_comment(comment_id):
     # edit_comment.html 에서 수정하기 눌렀을 때
     if request.method == 'POST':
         new_comment_text = request.form['comment']
-        conn = sqlite3.connect(DATABASE)
-        cur = conn.cursor()
-        cur.execute("UPDATE comments SET comment = ? WHERE id = ?", (new_comment_text, comment_id))
+        cur.execute("UPDATE comments SET comment = ? WHERE id = ?",
+                    (new_comment_text, comment_id))
+        cur.execute("SELECT post_id FROM comments WHERE id = ?", (comment_id,))
+        post_id = cur.fetchone()
         conn.commit()
         conn.close()
         return post(post_id[0])
@@ -217,7 +252,6 @@ def signup():
                 </script>
                 '''
     return render_template('signup.html')
-
 
 if __name__ == '__main__':
     create_table_users()
