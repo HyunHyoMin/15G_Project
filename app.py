@@ -331,9 +331,16 @@ def signup():
 @app.route('/search', methods=['POST'])
 def search():
     search = request.form.get("search")
+    search_type=request.form["search_type"]
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
-    cur.execute("SELECT * FROM posts WHERE title LIKE ? ORDER BY date DESC", ('%' + search + '%',))
+    # Column 명은 동적으로 할당할 수 없다고 하네요 ㅜㅜ
+    if search_type == 'title':
+        cur.execute("SELECT * FROM posts WHERE title LIKE ? ORDER BY date DESC", ('%' + search + '%',))
+    elif search_type == 'username':
+        cur.execute("SELECT * FROM posts WHERE username LIKE ? ORDER BY date DESC", ('%' + search + '%',))
+    elif search_type == 'content':
+        cur.execute("SELECT * FROM posts WHERE content LIKE ? ORDER BY date DESC", ('%' + search + '%',))
     search_post = cur.fetchall()
     conn.close()
     return render_template('index.html', search_post=search_post, logged_id=session["username"])
