@@ -83,13 +83,13 @@ body {
     border: none;
 }
 
-.card-body .check,
+
 .delete {
     width: 10%;
 }
 
 .card-body .title {
-    width: 50%;
+    width: 30%;
     text-align: left;
 }
 
@@ -99,7 +99,7 @@ body {
 }
 
 .card-body .writer {
-    width: 10%;
+    width: 30%;
     text-align: right;
 
 }
