@@ -325,6 +325,16 @@ def signup():
                 '''
     return render_template('signup.html')
 
+@app.route('/search', methods=['POST'])
+def search():
+    search = request.form.get("search")
+    conn = sqlite3.connect(DATABASE)
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM posts WHERE title = ?", (search,))
+    search_post = cur.fetchall()
+    conn.close()
+    return render_template('index.html', search_post=search_post, logged_id=session["username"])
+
 if __name__ == '__main__':
     create_table_users()
     create_table_posts()
