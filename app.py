@@ -144,7 +144,7 @@ def edit(post_id):
             cur.execute(
             "SELECT P.username FROM posts P INNER JOIN users U ON P.username=U.username WHERE P.id = ?", (post_id,))
             result = cur.fetchall()
-            if result[0][0]==username:
+            if result[0][0]==username or username == session["username"]:
                 cur.execute("SELECT * FROM posts WHERE id = ?", (post_id,))
                 post = cur.fetchone()
                 conn.close()
@@ -178,7 +178,7 @@ def delete(post_id):
                 cur.execute(
                 "SELECT P.username FROM posts P INNER JOIN users U ON P.username=U.username WHERE P.id = ?", (post_id,))
                 result = cur.fetchall()
-                if result[0][0]==username:
+                if result[0][0]==username or username == session["username"]:
                     cur.execute("DELETE FROM posts WHERE id=?", (post_id,))
                     cur.execute("DELETE FROM comments WHERE post_id=?", (post_id,))
                     conn.commit()
