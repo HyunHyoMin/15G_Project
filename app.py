@@ -84,7 +84,7 @@ def create():
         info = cur.fetchone()
         # 입력한 계정이 유효한 경우
         if not info is None:
-            cur.execute("INSERT INTO posts (username,title, content, date) VALUES (?,?, ?, ?)",
+            cur.execute("INSERT INTO posts (username,title, content, date) VALUES (?,?,?,?)",
                         (username, title, content, date))
             conn.commit()
             new_post_id = cur.lastrowid
@@ -120,13 +120,16 @@ def edit(post_id):
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
     # edit.html에서 수정을 누른 경우
-    if request.method == 'POST':
+    if request.method == 'POST' and request.form['btn'] == '1':
         title = request.form['title']
         content = request.form['content']
         cur.execute(
             "UPDATE posts SET title = ?, content = ? WHERE id = ?", (title, content, post_id))
         conn.commit()
         conn.close()
+        return redirect(f'/post/{post_id}')
+    # edit.html에서 뒤로가기 누른 경우
+    elif request.method == 'POST' and request.form['btn'] == '0':
         return redirect(f'/post/{post_id}')
     # post.html 에서 수정을 누른 경우    
     else:
@@ -140,14 +143,11 @@ def edit(post_id):
         else :
             #로그인 정보
             username = session["username"]
-            cur.execute(
-            "SELECT password FROM users WHERE username=?", (username,))
-            password =cur.fetchone()[0]
             #게시글 정보
             cur.execute(
-            "SELECT P.username,password FROM posts P INNER JOIN users U ON P.username=U.username WHERE P.id = ?", (post_id,))
+            "SELECT P.username FROM posts P INNER JOIN users U ON P.username=U.username WHERE P.id = ?", (post_id,))
             result = cur.fetchall()
-            if result[0][0]==username and result[0][1]==password:
+            if result[0][0]==username or "admin" == session["username"]:
                 cur.execute("SELECT * FROM posts WHERE id = ?", (post_id,))
                 post = cur.fetchone()
                 conn.close()
@@ -177,15 +177,11 @@ def delete(post_id):
                 conn = sqlite3.connect(DATABASE)
                 cur = conn.cursor()
                 username = session["username"]
-                cur.execute(
-                "SELECT password FROM users WHERE username=?", (username,))
-                #로그인 정보
-                password =cur.fetchone()[0]
                 #게시글 정보
                 cur.execute(
-                "SELECT P.username,password FROM posts P INNER JOIN users U ON P.username=U.username WHERE P.id = ?", (post_id,))
+                "SELECT P.username FROM posts P INNER JOIN users U ON P.username=U.username WHERE P.id = ?", (post_id,))
                 result = cur.fetchall()
-                if result[0][0]==username and result[0][1]==password:
+                if result[0][0]==username or "admin" == session["username"]:
                     cur.execute("DELETE FROM posts WHERE id=?", (post_id,))
                     cur.execute("DELETE FROM comments WHERE post_id=?", (post_id,))
                     conn.commit()

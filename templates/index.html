@@ -21,7 +21,7 @@
 
         <!-- 1-1. 게시판 이름은 class="card-header"로  <div>로 구역 설정 -->
         <div class="card-header">
-            <h1>15G는 게시판</h1>
+            <h1><a href="/">15G는 게시판</a></h1>
         </div>
 
         {% if not session.get("logged_in") %}
@@ -48,7 +48,7 @@
 
         {% else %}
         <div class="logged">
-            <p>환영합니다. 15G는 {{ logged_id }}님!</p>
+            <p>환영합니다. <br><strong>15G는 {{ logged_id }}님!</strong></p>
             <form action="/logout" method="GET">
                 <button type="submit" class="btn-logout">로그아웃</button>
             </form>
@@ -107,6 +107,14 @@
                 <input type="text" name="search" placeholder="검색어를 입력하세요.">
                 <button type="submit" class="search-btn">검색</button>
             </form>
+
+            <form action="{{ url_for('create') }}" method="GET">
+                <div class="btn">
+                    <a href="/create">글쓰기</a>
+                </div>
+            </form>
+    
+        </div>
         </div>
 
 
