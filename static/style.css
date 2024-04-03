@@ -471,6 +471,16 @@ dd {
     border-radius: 10px;
     cursor: pointer
 }
+
+.btn-login-modal {
+    margin: 10px 10px 20px 10px;
+    padding: 10px;
+    background-color: rgb(83, 71, 255);
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer
+}
+
 /* login의 css 구역 */
 
 .login-title {
