@@ -546,7 +546,6 @@ dd {
     cursor: pointer
 }
 
-/*------------------*/
 
 .logged {
     position: absolute;
@@ -571,4 +570,27 @@ dd {
     color: #fff;
     border-radius: 10px;
     cursor: pointer
+}
+
+.btn-search {
+    top: 20px;
+    right: 8px;
+    margin: 5px 5px 5px 5px;
+    padding: 10px;
+    background-color: rgb(83, 71, 255);
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer
+}
+
+.text-search{
+    padding :10px;
+    width: 300px;
+    border-radius: 10px;
+}
+
+.search_type{
+    padding :10px;
+    width: 100px;
+    border-radius: 10px;
 }
