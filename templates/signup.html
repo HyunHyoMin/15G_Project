@@ -1,36 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="{{ url_for('static', filename = 'style.css') }}" rel="stylesheet" />
     <title>15G조 회원가입</title>
-  </head>
+</head>
 
-  <body>
+<body>
     <div class="card">
-      <div class="login-title">
-        <h1>회원가입</h1>
-      </div>
-      <div class="login-vlew">
-        <form action="/signup" method="POST">
-          <div class="id">
-            <label for="username">Id:</label><br>
-            <input type="text" id="username" name="username" required placeholder="id를 입력하세요"/>
-          </div>
-          <div class="password">
-            <label for="password">Password:</label><br>
-            <input type="password" id="password" name="password" required placeholder="패스워드를 입력하세요"/>
-          </div>
-          <div class="repassword">
-            <label for="password">Password 재입력:</label><br>
-            <input type="password" id="re_password" name="re_password" required placeholder="패스워드를 다시 입력하세요"/>
-          </div>
-          <div class="btn-signup">
-            <input type="submit" value="회원 가입" id="btn-signup"/>
-          </div>
-        </form>
-      </div>
+        <div class="login-title">
+            <h1>회원가입</h1>
+        </div>
+        <div class="login-vlew">
+            <form action="/signup" method="POST">
+                <div class="id">
+                    <label for="username">Id:</label><br>
+                    <input type="text" id="username" name="username" required placeholder="id를 입력하세요" />
+                </div>
+                <div class="password">
+                    <label for="password">Password:</label><br>
+                    <input type="password" id="password" name="password" required placeholder="패스워드를 입력하세요" />
+                </div>
+                <div class="repassword">
+                    <label for="password">Password 재입력:</label><br>
+                    <input type="password" id="re_password" name="re_password" required placeholder="패스워드를 다시 입력하세요" />
+                </div>
+                <div class="btn-signup">
+                    <input type="submit" value="회원 가입" id="btn-signup" />
+                </div>
+            </form>
+        </div>
     </div>
-  </body>
+</body>
+
 </html>
