@@ -333,7 +333,7 @@ def search():
     search = request.form.get("search")
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
-    cur.execute("SELECT * FROM posts WHERE title = ?", (search,))
+    cur.execute("SELECT * FROM posts WHERE title LIKE ? ORDER BY date DESC", ('%' + search + '%',))
     search_post = cur.fetchall()
     conn.close()
     return render_template('index.html', search_post=search_post, logged_id=session["username"])
