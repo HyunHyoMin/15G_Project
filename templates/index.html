@@ -34,12 +34,20 @@
             </form>
             </p>
             <a href="#" rel="modal:close">닫기</a>
+
+            
         </div>
 
         <div class="btn-login">
             <p><a href="#modal1" rel="modal:open">로그인</a></p>
         </div>
 
+        <form action="{{ url_for('signup') }}" method="GET">
+            <div class="btn-container">
+                <a href="/signup">회원가입</a>
+            </div>
+        </form>
+        
         {% else %}
         <p>환영합니다. 15G는 {{ logged_id }}님!</p>
         <form action="/logout" method="GET">
@@ -87,11 +95,6 @@
             </div>
         </form>
 
-        <form action="{{ url_for('signup') }}" method="GET">
-            <div class="btn-container">
-                <a href="/signup">회원가입</a>
-            </div>
-        </form>
     </div>
 </body>
 {% for post in posts %}
