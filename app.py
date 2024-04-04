@@ -37,7 +37,7 @@ def index():
 def login():
     login_id = request.form.get("login_id")
     login_pw = request.form.get("login_pw")
-    
+    #
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
     cur.execute("SELECT username, password, nickname FROM users WHERE username = ?", (login_id,))
