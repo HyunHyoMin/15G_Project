@@ -270,7 +270,7 @@ def edit_comment(comment_id):
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
     # edit_comment.html 에서 수정하기 눌렀을 때
-    if request.method == 'POST':
+    if request.method == 'POST' :
         new_comment_text = request.form['comment']
         cur.execute("UPDATE comments SET comment = ? WHERE id = ?",
                     (new_comment_text, comment_id))
@@ -281,10 +281,29 @@ def edit_comment(comment_id):
         return post(post_id)
     # post.html 에서 EDIT을 눌렀을 때
     else:
-        cur.execute("SELECT * FROM comments WHERE id = ?", (comment_id,))
-        comment = cur.fetchone()
-        conn.close()
-        return render_template('edit_comment.html', comment_id=comment[0], comment_text=comment[2])
+        # 로그인을 했을 때
+        if session.get("logged_in"):
+            cur.execute("SELECT username,post_id FROM comments WHERE id = ?", (comment_id,))
+            result = cur.fetchone()
+            username,post_id=result[0],result[1]
+            if session["username"]==username or session["username"]=="admin":
+                cur.execute("SELECT id,comment FROM comments WHERE id = ?", (comment_id,))
+                comment = cur.fetchone()
+                conn.close()
+                return render_template('edit_comment.html', comment_id=comment[0], comment_text=comment[1])
+            else:
+                return f'''
+            <script> alert("수정 권한이 없습니다.");
+            location.href="/post/{post_id}"
+            </script>
+            '''
+        # 로그인을 하지 않았을 때
+        else :
+            return '''
+            <script> alert("수정 권한이 없습니다. 로그인을 해주세요.");
+            location.href="/"
+            </script>
+            '''
 
 
 @app.route('/signup', methods=['GET', 'POST'])
