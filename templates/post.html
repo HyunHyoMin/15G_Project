@@ -14,7 +14,7 @@
 
         <!-- 게시판을 누를시 첫 페이지인 index.html로 이동 -->
         <div class="card-header3">
-            <h1><a href="/">게시판</a></h1>
+            <h1><a href="/">15G는 게시판</a></h1>
         </div>
 
         <div class="card-view">
@@ -54,7 +54,7 @@
                     {% if comments %}
                     <ul>
                         {% for comment in comments %}
-                        <li>{{ comment[2] }} | {{ comment[3] }} 
+                        <li>{{ comment[3] }} | {{ comment[1] }} | {{ comment[4] }} <br>
                             <button type="button" onclick="location.href='/edit_comment/{{ comment[0] }}'" id='btn'>수정</button>
                             <button type="button" onclick="location.href='/delete_comment/{{ comment[0] }}'" id='btn'>삭제</button>
                         {% endfor %}
