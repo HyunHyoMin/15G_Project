@@ -22,14 +22,14 @@ def index():
     conn.close()
 
     # 등록된 날짜와 시간을 datetime 객체로 변환합니다.
-    formatted_posts = [(post[0], post[1], post[2], post[3], datetime.strptime(
+    formatted_posts = [(post[0], post[1], post[2], post[3], post[5], datetime.strptime(
         post[4], '%Y-%m-%d %H:%M')) for post in posts]
 
     # 시간이 같은 경우 먼저 등록된 게시글이 아래로 가도록 정렬합니다.
     sorted_posts = sorted(formatted_posts, key=lambda x: (x[4], x[0]), reverse=True)
     
     if session.get("logged_in"):
-        return render_template('index.html', posts=sorted_posts, logged_id=session["username"])
+        return render_template('index.html', posts=sorted_posts, logged_id=session["nickname"])
     
     return render_template('index.html', posts=sorted_posts)
 
@@ -40,13 +40,14 @@ def login():
     
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
-    cur.execute("SELECT username, password FROM users WHERE username = ?", (login_id,))
+    cur.execute("SELECT username, password, nickname FROM users WHERE username = ?", (login_id,))
     user_info = cur.fetchone()
     conn.close()
     
     if user_info and user_info[1] == login_pw:
         session['logged_in'] = True
         session['username'] = user_info[0]
+        session['nickname'] = user_info[2]
         return redirect('/')
     else:
         return '''
@@ -59,6 +60,7 @@ def login():
 def logout():
     session.pop('logged_in', None)
     session.pop('username', None)
+    session.pop('nickname', None) 
     return redirect('/')
 
 @app.route('/create/', methods=['GET', 'POST'])
@@ -84,8 +86,8 @@ def create():
         info = cur.fetchone()
         # 입력한 계정이 유효한 경우
         if not info is None:
-            cur.execute("INSERT INTO posts (username,title, content, date) VALUES (?,?,?,?)",
-                        (username, title, content, date))
+            cur.execute("INSERT INTO posts (username, title, content, date, nickname) VALUES (?,?,?,?,?)",
+                        (username, title, content, date, info[2]))
             conn.commit()
             new_post_id = cur.lastrowid
             conn.close()
@@ -310,6 +312,7 @@ def edit_comment(comment_id):
 def signup():
     if request.method == 'POST':
         username = request.form['username'].strip()  # 공백 제거
+        nickname = request.form['nickname']
         password = request.form['password']
         re_password = request.form['re_password']
         
@@ -358,7 +361,7 @@ def signup():
                 </script>
                 '''
         cur.execute(
-            "INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+            "INSERT INTO users (username, password, nickname) VALUES (?, ?, ?)", (username, password, nickname))
         conn.commit()
         conn.close()
         return '''
@@ -377,13 +380,13 @@ def search():
     # Column 명은 동적으로 할당할 수 없다고 하네요 ㅜㅜ
     if search_type == 'title':
         cur.execute("SELECT * FROM posts WHERE title LIKE ? ORDER BY date DESC", ('%' + search + '%',))
-    elif search_type == 'username':
-        cur.execute("SELECT * FROM posts WHERE username LIKE ? ORDER BY date DESC", ('%' + search + '%',))
+    elif search_type == 'nickname':
+        cur.execute("SELECT * FROM posts WHERE nickname LIKE ? ORDER BY date DESC", ('%' + search + '%',))
     elif search_type == 'content':
         cur.execute("SELECT * FROM posts WHERE content LIKE ? ORDER BY date DESC", ('%' + search + '%',))
     search_post = cur.fetchall()
     conn.close()
-    return render_template('index.html', search_post=search_post, logged_id=session["username"])
+    return render_template('index.html', search_post=search_post, logged_id=session["nickname"])
 
 if __name__ == '__main__':
     create_table_users()
