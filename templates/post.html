@@ -54,7 +54,7 @@
                     {% if comments %}
                     <ul>
                         {% for comment in comments %}
-                        <li>{{ comment[2] }} | {{ comment[3] }} 
+                        <li>{{ comment[3] }} | {{ comment[1] }} | {{ comment[4] }} <br>
                             <button type="button" onclick="location.href='/edit_comment/{{ comment[0] }}'" id='btn'>수정</button>
                             <button type="button" onclick="location.href='/delete_comment/{{ comment[0] }}'" id='btn'>삭제</button>
                         {% endfor %}

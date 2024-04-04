@@ -210,15 +210,14 @@ def view_comments(post_id):
 @app.route('/create_comment/<int:post_id>', methods=['POST'])
 def create_comment(post_id):
     comment_text = request.form['comment']
-    print(comment_text)
     # comment에 내용이 있을 경우
     if comment_text:
         # 로그인을 하고 있는 경우
         if session.get("logged_in"):
             conn = sqlite3.connect(DATABASE)
             cur = conn.cursor()
-            cur.execute("INSERT INTO comments (post_id, comment, date) VALUES (?, ?, ?)",
-                        (post_id, comment_text, date))
+            cur.execute("INSERT INTO comments (username,post_id, comment, date) VALUES (?, ?, ?, ?)",
+                        (session["username"],post_id, comment_text, date))
             conn.commit()
             conn.close()
             return redirect(f'/post/{post_id}')
@@ -239,18 +238,32 @@ def create_comment(post_id):
 
 @app.route('/delete_comment/<int:comment_id>', methods=['GET'])
 def delete_comment(comment_id):
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
-    cur.execute("SELECT post_id FROM comments WHERE id = ?", (comment_id,))
-    post_id = cur.fetchone()
-    cur.execute("DELETE FROM comments WHERE id=?", (comment_id,))
-    conn.commit()
-    conn.close()
-    return post(post_id[0])
-    # 이전에는 comment_id로 post_id를 이용해서 redirect했었는데
-    # DELETE 이후, 댓글이 없어지면 접근할 수 없어지기 때문에
-    # DELETE 이전에 post_id를 가져오고서 transaction 시행 -> post(post_id) 호출
-
+    # 로그인을 하고 있는 경우
+    if session.get("logged_in"):
+        conn = sqlite3.connect(DATABASE)
+        cur = conn.cursor()
+        cur.execute("SELECT username,post_id FROM comments WHERE id = ?", (comment_id,))
+        result=cur.fetchone()
+        username,post_id=result[0],result[1]
+        #삭제하려는 것이 본인 댓글일 때 + admin 계정일 때
+        if  session["username"]==username or session["username"]=='admin':
+            cur.execute("DELETE FROM comments WHERE id=?", (comment_id,))
+            conn.commit()
+            conn.close()
+            return post(post_id)
+        else :
+            return f'''
+            <script> alert("삭제 권한이 없습니다.");
+            location.href="/post/{post_id}"
+            </script>
+            '''
+    # 로그인 없이 삭제하려는 경우
+    else :
+        return '''
+            <script> alert("삭제 권한이 없습니다. 로그인을 해주세요.");
+            location.href="/"
+            </script>
+            '''
 
 @app.route('/edit_comment/<int:comment_id>', methods=['GET', 'POST'])
 def edit_comment(comment_id):
@@ -262,10 +275,10 @@ def edit_comment(comment_id):
         cur.execute("UPDATE comments SET comment = ? WHERE id = ?",
                     (new_comment_text, comment_id))
         cur.execute("SELECT post_id FROM comments WHERE id = ?", (comment_id,))
-        post_id = cur.fetchone()
+        post_id = cur.fetchone()[0]
         conn.commit()
         conn.close()
-        return post(post_id[0])
+        return post(post_id)
     # post.html 에서 EDIT을 눌렀을 때
     else:
         cur.execute("SELECT * FROM comments WHERE id = ?", (comment_id,))

@@ -26,9 +26,11 @@ def create_table_comments():
     cur.execute('''
         CREATE TABLE IF NOT EXISTS comments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL,
             post_id INTEGER NOT NULL,
             comment TEXT NOT NULL,
-            date TEXT NOT NULL
+            date TEXT NOT NULL,
+            FOREIGN KEY(username) REFERENCES users(username)
         )
     ''')
     conn.commit()
