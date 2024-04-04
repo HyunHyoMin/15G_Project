@@ -218,8 +218,8 @@ def create_comment(post_id):
         if session.get("logged_in"):
             conn = sqlite3.connect(DATABASE)
             cur = conn.cursor()
-            cur.execute("INSERT INTO comments (username,post_id, comment, date) VALUES (?, ?, ?, ?)",
-                        (session["username"],post_id, comment_text, date))
+            cur.execute("INSERT INTO comments (username,post_id, comment, date, nickname) VALUES (?, ?, ?, ?, ?)",
+                        (session["username"],post_id, comment_text, date, session["nickname"]))
             conn.commit()
             conn.close()
             return redirect(f'/post/{post_id}')

@@ -31,7 +31,7 @@ def create_table_comments():
             post_id INTEGER NOT NULL,
             comment TEXT NOT NULL,
             date TEXT NOT NULL,
-            post_nickname TEXT NOT NULL,
+            nickname TEXT,
             FOREIGN KEY(username) REFERENCES users(username)
         )
     ''')
