@@ -386,7 +386,7 @@ def search():
         cur.execute("SELECT * FROM posts WHERE content LIKE ? ORDER BY date DESC", ('%' + search + '%',))
     search_post = cur.fetchall()
     conn.close()
-    return render_template('index.html', search_post=search_post, logged_id=session["nickname"])
+    return render_template('index.html', search_post=search_post, logged_id=session["username"])
 
 if __name__ == '__main__':
     create_table_users()
