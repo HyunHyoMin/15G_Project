@@ -6,30 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
 
     <title>15G는 게시판</title>
-</head>
 
-<body>
-    <!-- 1. 게시판의 화면은 class="card"로 적용 -->
-    <div class="card">
-
-        <!-- 1-1. 게시판 이름은 class="card-header"로  <div>로 구역 설정 -->
-        <div class="card-header">
-            <h1><a href="/">15G는 게시판</a></h1>
-        </div>
-
-        {% if not session.get("logged_in") %}
+    {% if not session.get("logged_in") %}
         <div id="modal1" class="modal">
             <p>
             <form action="/login" method="POST">
-                <input type="text" name="login_id" placeholder="아이디">
-                <input type="password" name="login_pw" placeholder="비밀번호">
+                <input type="text" name="login_id" class='text-search' placeholder="아이디">
+                <input type="password" name="login_pw" class='text-search' placeholder="비밀번호"><br>
                 <button type="submit" class="btn-login-modal">로그인</button>
             </form>
             </p>
@@ -54,6 +43,18 @@
             </form>
         </div>
         {% endif %}
+</head>
+
+<body>
+    <!-- 1. 게시판의 화면은 class="card"로 적용 -->
+    <div class="card">
+
+        <!-- 1-1. 게시판 이름은 class="card-header"로  <div>로 구역 설정 -->
+        <div class="card-header">
+            <h1><a href="/">15G는 게시판</a></h1>
+        </div>
+
+        
 
         <!-- 1-2. 내용은 class="card-body"로 <div>로 구역 설정 -->
         <div class="card-body">
@@ -66,8 +67,8 @@
                 {% for post in search_post %}
                     <div class="content-box">
                         <div class="title"><a href="/post/{{ post[0] }}"><strong>{{ post[2] }}</strong></a></div>
-                        <div class="writer">{{ post[1] }}</div>
-                        <div class="date">{{ post[4] }}</div>
+                        <div class="writer">{{ post[4] }}</div>
+                        <div class="date">{{ post[5] }}</div>
                         <form id="deleteForm_{{ post[0] }}" action="{{ url_for('delete', post_id=post[0]) }}" method="POST">
                             <div class="delete">
                                 <input type="hidden" name="confirm_delete" value="1">
@@ -83,8 +84,8 @@
             {% for post in posts %}
             <div class="content-box">
                 <div class="title"><a href="/post/{{ post[0] }}"><strong>{{ post[2] }}</strong></a></div>
-                <div class="writer"> {{post[1]}} </div>
-                <div class="date"> {{ post[4] }} </div>
+                <div class="writer"> {{post[4]}} </div>
+                <div class="date"> {{ post[5] }} </div>
                 <form id="deleteForm_{{ post[0] }}" action="{{ url_for('delete', post_id=post[0]) }}" method="POST">
                     <div class="delete">
                         <input type="hidden" name="confirm_delete" value="1">
@@ -104,8 +105,13 @@
             </ul>
 
             <form action="/search" method="POST">
-                <input type="text" name="search" placeholder="검색어를 입력하세요.">
-                <button type="submit" class="search-btn">검색</button>
+                <select name="search_type" class="search_type">
+                    <option value="title" selected="selected">제목</option>
+                    <option value="nickname">작성자</option>
+                    <option value="content">내용</option>
+                </select>
+                <input type="text" name="search" class="text-search" placeholder="검색어를 입력하세요.">
+                <button type="submit" class="btn-search">검색</button>
             </form>
 
             <form action="{{ url_for('create') }}" method="GET">
@@ -116,6 +122,16 @@
     
         </div>
         </div>
-
+    </body>
+    {% for post in posts %}
+        <script>
+            document.getElementById("deleteForm_{{ post[0] }}").onsubmit = function () {
+                // 삭제하기 전에 한 번 더 확인하는 창을 띄움
+                var result = confirm("정말 삭제하시겠습니까?");
+                // 사용자가 "Yes"를 클릭한 경우에만 삭제를 진행함
+                return result;
+            };
+        </script>
+    {% endfor %}
 
 </html>

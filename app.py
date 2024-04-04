@@ -22,31 +22,32 @@ def index():
     conn.close()
 
     # 등록된 날짜와 시간을 datetime 객체로 변환합니다.
-    formatted_posts = [(post[0], post[1], post[2], post[3], datetime.strptime(
+    formatted_posts = [(post[0], post[1], post[2], post[3], post[5], datetime.strptime(
         post[4], '%Y-%m-%d %H:%M')) for post in posts]
 
     # 시간이 같은 경우 먼저 등록된 게시글이 아래로 가도록 정렬합니다.
     sorted_posts = sorted(formatted_posts, key=lambda x: (x[4], x[0]), reverse=True)
     
     if session.get("logged_in"):
-        return render_template('index.html', posts=sorted_posts, logged_id=session["username"])
+        return render_template('index.html', posts=sorted_posts, logged_id=session["nickname"])
     
     return render_template('index.html', posts=sorted_posts)
 
 @app.route("/login", methods=["POST"])
 def login():
+    #
     login_id = request.form.get("login_id")
     login_pw = request.form.get("login_pw")
-    
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
-    cur.execute("SELECT username, password FROM users WHERE username = ?", (login_id,))
+    cur.execute("SELECT username, password, nickname FROM users WHERE username = ?", (login_id,))
     user_info = cur.fetchone()
     conn.close()
     
     if user_info and user_info[1] == login_pw:
         session['logged_in'] = True
         session['username'] = user_info[0]
+        session['nickname'] = user_info[2]
         return redirect('/')
     else:
         return '''
@@ -59,6 +60,7 @@ def login():
 def logout():
     session.pop('logged_in', None)
     session.pop('username', None)
+    session.pop('nickname', None) 
     return redirect('/')
 
 @app.route('/create/', methods=['GET', 'POST'])
@@ -84,8 +86,8 @@ def create():
         info = cur.fetchone()
         # 입력한 계정이 유효한 경우
         if not info is None:
-            cur.execute("INSERT INTO posts (username,title, content, date) VALUES (?,?,?,?)",
-                        (username, title, content, date))
+            cur.execute("INSERT INTO posts (username, title, content, date, nickname) VALUES (?,?,?,?,?)",
+                        (username, title, content, date, info[2]))
             conn.commit()
             new_post_id = cur.lastrowid
             conn.close()
@@ -210,16 +212,23 @@ def view_comments(post_id):
 @app.route('/create_comment/<int:post_id>', methods=['POST'])
 def create_comment(post_id):
     comment_text = request.form['comment']
-    print(comment_text)
     # comment에 내용이 있을 경우
     if comment_text:
-        conn = sqlite3.connect(DATABASE)
-        cur = conn.cursor()
-        cur.execute("INSERT INTO comments (post_id, comment, date) VALUES (?, ?, ?)",
-                    (post_id, comment_text, date))
-        conn.commit()
-        conn.close()
-        return redirect(f'/post/{post_id}')
+        # 로그인을 하고 있는 경우
+        if session.get("logged_in"):
+            conn = sqlite3.connect(DATABASE)
+            cur = conn.cursor()
+            cur.execute("INSERT INTO comments (username,post_id, comment, date, nickname) VALUES (?, ?, ?, ?, ?)",
+                        (session["username"],post_id, comment_text, date, session["nickname"]))
+            conn.commit()
+            conn.close()
+            return redirect(f'/post/{post_id}')
+        else :
+            return '''
+                    <script> alert("댓글을 다시려면 로그인하셔야 합니다.");
+                    location.href="/"
+                    </script>
+                    '''
     # comment가 blank인 경우
     else:
         return f'''
@@ -231,45 +240,79 @@ def create_comment(post_id):
 
 @app.route('/delete_comment/<int:comment_id>', methods=['GET'])
 def delete_comment(comment_id):
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
-    cur.execute("SELECT post_id FROM comments WHERE id = ?", (comment_id,))
-    post_id = cur.fetchone()
-    cur.execute("DELETE FROM comments WHERE id=?", (comment_id,))
-    conn.commit()
-    conn.close()
-    return post(post_id[0])
-    # 이전에는 comment_id로 post_id를 이용해서 redirect했었는데
-    # DELETE 이후, 댓글이 없어지면 접근할 수 없어지기 때문에
-    # DELETE 이전에 post_id를 가져오고서 transaction 시행 -> post(post_id) 호출
-
+    # 로그인을 하고 있는 경우
+    if session.get("logged_in"):
+        conn = sqlite3.connect(DATABASE)
+        cur = conn.cursor()
+        cur.execute("SELECT username,post_id FROM comments WHERE id = ?", (comment_id,))
+        result=cur.fetchone()
+        username,post_id=result[0],result[1]
+        #삭제하려는 것이 본인 댓글일 때 + admin 계정일 때
+        if  session["username"]==username or session["username"]=='admin':
+            cur.execute("DELETE FROM comments WHERE id=?", (comment_id,))
+            conn.commit()
+            conn.close()
+            return post(post_id)
+        else :
+            return f'''
+            <script> alert("삭제 권한이 없습니다.");
+            location.href="/post/{post_id}"
+            </script>
+            '''
+    # 로그인 없이 삭제하려는 경우
+    else :
+        return '''
+            <script> alert("삭제 권한이 없습니다. 로그인을 해주세요.");
+            location.href="/"
+            </script>
+            '''
 
 @app.route('/edit_comment/<int:comment_id>', methods=['GET', 'POST'])
 def edit_comment(comment_id):
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
     # edit_comment.html 에서 수정하기 눌렀을 때
-    if request.method == 'POST':
+    if request.method == 'POST' :
         new_comment_text = request.form['comment']
         cur.execute("UPDATE comments SET comment = ? WHERE id = ?",
                     (new_comment_text, comment_id))
         cur.execute("SELECT post_id FROM comments WHERE id = ?", (comment_id,))
-        post_id = cur.fetchone()
+        post_id = cur.fetchone()[0]
         conn.commit()
         conn.close()
-        return post(post_id[0])
+        return post(post_id)
     # post.html 에서 EDIT을 눌렀을 때
     else:
-        cur.execute("SELECT * FROM comments WHERE id = ?", (comment_id,))
-        comment = cur.fetchone()
-        conn.close()
-        return render_template('edit_comment.html', comment_id=comment[0], comment_text=comment[2])
+        # 로그인을 했을 때
+        if session.get("logged_in"):
+            cur.execute("SELECT username,post_id FROM comments WHERE id = ?", (comment_id,))
+            result = cur.fetchone()
+            username,post_id=result[0],result[1]
+            if session["username"]==username or session["username"]=="admin":
+                cur.execute("SELECT id,comment FROM comments WHERE id = ?", (comment_id,))
+                comment = cur.fetchone()
+                conn.close()
+                return render_template('edit_comment.html', comment_id=comment[0], comment_text=comment[1])
+            else:
+                return f'''
+            <script> alert("수정 권한이 없습니다.");
+            location.href="/post/{post_id}"
+            </script>
+            '''
+        # 로그인을 하지 않았을 때
+        else :
+            return '''
+            <script> alert("수정 권한이 없습니다. 로그인을 해주세요.");
+            location.href="/"
+            </script>
+            '''
 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         username = request.form['username'].strip()  # 공백 제거
+        nickname = request.form['nickname']
         password = request.form['password']
         re_password = request.form['re_password']
         
@@ -318,7 +361,7 @@ def signup():
                 </script>
                 '''
         cur.execute(
-            "INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+            "INSERT INTO users (username, password, nickname) VALUES (?, ?, ?)", (username, password, nickname))
         conn.commit()
         conn.close()
         return '''
@@ -331,9 +374,16 @@ def signup():
 @app.route('/search', methods=['POST'])
 def search():
     search = request.form.get("search")
+    search_type=request.form["search_type"]
     conn = sqlite3.connect(DATABASE)
     cur = conn.cursor()
-    cur.execute("SELECT * FROM posts WHERE title LIKE ? ORDER BY date DESC", ('%' + search + '%',))
+    # Column 명은 동적으로 할당할 수 없다고 하네요 ㅜㅜ
+    if search_type == 'title':
+        cur.execute("SELECT * FROM posts WHERE title LIKE ? ORDER BY date DESC", ('%' + search + '%',))
+    elif search_type == 'nickname':
+        cur.execute("SELECT * FROM posts WHERE nickname LIKE ? ORDER BY date DESC", ('%' + search + '%',))
+    elif search_type == 'content':
+        cur.execute("SELECT * FROM posts WHERE content LIKE ? ORDER BY date DESC", ('%' + search + '%',))
     search_post = cur.fetchall()
     conn.close()
     return render_template('index.html', search_post=search_post, logged_id=session["username"])

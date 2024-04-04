@@ -14,7 +14,7 @@
 
         <!-- 게시판을 누를시 첫 페이지인 index.html로 이동 -->
         <div class="card-header3">
-            <h1><a href="/">게시판</a></h1>
+            <h1><a href="/">15G는 게시판</a></h1>
         </div>
 
         <div class="card-view">
@@ -26,7 +26,7 @@
                 <!-- 목록을 만드는 <dl>, <dt>, <dd> tag -->
                 <dl>
                     <dt>작성자</dt>
-                    <dd>{{post[1]}}</dd>
+                    <dd>{{post[5]}}</dd>
                 </dl>
                 <dl>
                     <dt>날짜</dt>
@@ -54,7 +54,7 @@
                     {% if comments %}
                     <ul>
                         {% for comment in comments %}
-                        <li>{{ comment[2] }} | {{ comment[3] }} 
+                        <li>{{ comment[3] }} | {{ comment[5] }} | {{ comment[4] }} <br>
                             <button type="button" onclick="location.href='/edit_comment/{{ comment[0] }}'" id='btn'>수정</button>
                             <button type="button" onclick="location.href='/delete_comment/{{ comment[0] }}'" id='btn'>삭제</button>
                         {% endfor %}

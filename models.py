@@ -13,6 +13,7 @@ def create_table_posts():
             title TEXT NOT NULL,
             content TEXT NOT NULL,
             date TEXT NOT NULL,
+            nickname TEXT,
             FOREIGN KEY(username) REFERENCES users(username)
         )
     ''')
@@ -26,9 +27,12 @@ def create_table_comments():
     cur.execute('''
         CREATE TABLE IF NOT EXISTS comments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL,
             post_id INTEGER NOT NULL,
             comment TEXT NOT NULL,
-            date TEXT NOT NULL
+            date TEXT NOT NULL,
+            nickname TEXT,
+            FOREIGN KEY(username) REFERENCES users(username)
         )
     ''')
     conn.commit()
@@ -41,12 +45,13 @@ def create_table_users():
     cur.execute('''
         CREATE TABLE IF NOT EXISTS users (
             username TEXT PRIMARY KEY,
-            password TEXT NOT NULL
+            password TEXT NOT NULL,
+            nickname TEXT
         )
     ''')
     cur.execute("SELECT COUNT(*) FROM users")
     count = cur.fetchone()[0]
     if count == 0:
-        cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", ('admin', 'admin'))
+        cur.execute("INSERT INTO users (username, password, nickname) VALUES (?, ?, ?)", ('admin', 'admin', 'admin_test'))
     conn.commit()
     conn.close()
