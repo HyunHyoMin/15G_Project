@@ -52,6 +52,6 @@ def create_table_users():
     cur.execute("SELECT COUNT(*) FROM users")
     count = cur.fetchone()[0]
     if count == 0:
-        cur.execute("INSERT INTO users (username, password, nickname) VALUES (?, ?, ?)", ('admin', 'admin', 'test'))
+        cur.execute("INSERT INTO users (username, password, nickname) VALUES (?, ?, ?)", ('admin', 'admin', 'admin_test'))
     conn.commit()
     conn.close()
