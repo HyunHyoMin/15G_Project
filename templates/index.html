@@ -123,6 +123,16 @@
     
         </div>
         </div>
-
+    </body>
+    {% for post in posts %}
+        <script>
+            document.getElementById("deleteForm_{{ post[0] }}").onsubmit = function () {
+                // 삭제하기 전에 한 번 더 확인하는 창을 띄움
+                var result = confirm("정말 삭제하시겠습니까?");
+                // 사용자가 "Yes"를 클릭한 경우에만 삭제를 진행함
+                return result;
+            };
+        </script>
+    {% endfor %}
 
 </html>
