@@ -35,6 +35,7 @@ def index():
 
 @app.route("/login", methods=["POST"])
 def login():
+    #
     login_id = request.form.get("login_id")
     login_pw = request.form.get("login_pw")
     conn = sqlite3.connect(DATABASE)
